@@ -1,8 +1,21 @@
 #pragma once
 
-void initTexture(sf::Texture &texture)
+struct Map
 {
-    if (!texture.loadFromFile("../images/map/map.png"))
+    sf::Texture texture;
+    sf::Sprite img;
+};
+
+struct Ground
+{
+    sf::Texture texture;
+    sf::Sprite img;
+    sf::Vector2f position;
+};
+
+void initMapTexture(sf::Texture &texture)
+{
+    if (!texture.loadFromFile("../images/map/background.png"))
     {
         // error...
         std::cout << "Fail to load image" << std::endl;
@@ -10,11 +23,26 @@ void initTexture(sf::Texture &texture)
     }
 }
 
-void renderMap(sf::RenderWindow &window)
+void initGroundTexture(sf::Texture &texture)
 {
-    sf::Sprite map;
-    sf::Texture texture;
-    initTexture(texture);
-    map.setTexture(texture);
-    window.draw(map);
+    if (!texture.loadFromFile("../images/map/ground.png"))
+    {
+        // error...
+        std::cout << "Fail to load image" << std::endl;
+        return;
+    }
+}
+
+initMap(Map &map)
+{
+    initMapTexture(map.texture);
+    map.img.setTexture(map.texture);
+}
+
+initGround(Ground &ground)
+{
+    ground.position = {0, 724};
+    initGroundTexture(ground.texture);
+    ground.img.setTexture(ground.texture);
+    ground.img.setPosition(ground.position);
 }

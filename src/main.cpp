@@ -2,6 +2,17 @@
 #include <cmath>
 #include <iostream>
 #include "map/map.h"
+#include "hero/hero.h"
+#include "walls/wall.h"
+#include "level/level.h"
+
+void initStructures(Map &map, Ground &ground, Hero &hero, Level levels[])
+{
+    initMap(map);
+    initGround(ground);
+    initHero(hero);
+    initLevels(levels);
+}
 
 void pollEvents(sf::RenderWindow &window)
 {
@@ -13,16 +24,29 @@ void pollEvents(sf::RenderWindow &window)
         case sf::Event::Closed:
             window.close();
             break;
+        case sf::Event::KeyReleased:
+            if (event.key.code == sf::Keyboard::Space)
+            {
+            }
+            break;
+        case sf::Event::KeyPressed:
+            if (event.key.code == sf::Keyboard::Space)
+            {
+            }
+            break;
         default:
             break;
         }
     }
 }
 
-void redrawFrame(sf::RenderWindow &window)
+void redrawFrame(sf::RenderWindow &window, Map map, Ground ground, Hero hero)
 {
     window.clear();
-    renderMap(window);
+    window.draw(map.img);
+    drawWalls(window);
+    window.draw(ground.img);
+    window.draw(hero.img);
     window.display();
 }
 
@@ -32,6 +56,10 @@ int main()
     constexpr unsigned WINDOW_HEIGHT = 800;
 
     sf::Clock clock;
+    Map map;
+    Ground ground;
+    Hero hero;
+    Level levels[];
 
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
@@ -39,9 +67,11 @@ int main()
         sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}),
         "Wall Kicker", sf::Style::Default, settings);
 
+    initStructures(map, ground, hero, levels);
+
     while (window.isOpen())
     {
         pollEvents(window);
-        redrawFrame(window);
+        redrawFrame(window, map, ground, hero);
     }
 }

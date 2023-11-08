@@ -1,17 +1,18 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <iostream>
+#include <vector>
 #include "map/map.h"
 #include "hero/hero.h"
 #include "walls/wall.h"
-#include "level/level.h"
+#include "segment/segment.h"
 
-void initStructures(Map &map, Ground &ground, Hero &hero, Level levels[])
+void initStructures(Map &map, Ground &ground, Hero &hero, std::vector<Segment> &segments)
 {
     initMap(map);
     initGround(ground);
     initHero(hero);
-    initLevels(levels);
+    initSegments(segments);
 }
 
 void pollEvents(sf::RenderWindow &window)
@@ -40,11 +41,11 @@ void pollEvents(sf::RenderWindow &window)
     }
 }
 
-void redrawFrame(sf::RenderWindow &window, Map map, Ground ground, Hero hero)
+void redrawFrame(sf::RenderWindow &window, Map map, Ground ground, Hero hero, std::vector<Segment> &segments)
 {
     window.clear();
     window.draw(map.img);
-    drawWalls(window);
+    drawWalls(window, segments);
     window.draw(ground.img);
     window.draw(hero.img);
     window.display();
@@ -59,7 +60,9 @@ int main()
     Map map;
     Ground ground;
     Hero hero;
-    Level levels[];
+    std::vector<Segment> segments;
+    segments.push_back(Segment());
+    segments.push_back(Segment());
 
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
@@ -67,11 +70,11 @@ int main()
         sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}),
         "Wall Kicker", sf::Style::Default, settings);
 
-    initStructures(map, ground, hero, levels);
+    initStructures(map, ground, hero, segments);
 
     while (window.isOpen())
     {
         pollEvents(window);
-        redrawFrame(window, map, ground, hero);
+        redrawFrame(window, map, ground, hero, segments);
     }
 }

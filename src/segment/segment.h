@@ -12,7 +12,6 @@ struct Segment
 
 void initSegments(std::vector<Segment> &segments)
 {
-    // Segment lvl1;
     const int countWallsLvl1 = 2;
     for (int i = 0; i < countWallsLvl1; i++)
         segments[0].walls.push_back(Wall());

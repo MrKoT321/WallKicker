@@ -3,8 +3,8 @@
 #include <iostream>
 #include <vector>
 #include "map/map.h"
-#include "hero/hero.h"
 #include "walls/wall.h"
+#include "hero/hero.h"
 #include "segment/segment.h"
 
 void initStructures(Map &map, Ground &ground, Hero &hero, std::vector<Segment> &segments)
@@ -15,7 +15,7 @@ void initStructures(Map &map, Ground &ground, Hero &hero, std::vector<Segment> &
     initSegments(segments);
 }
 
-void pollEvents(sf::RenderWindow &window)
+void pollEvents(sf::RenderWindow &window, Hero &hero)
 {
     sf::Event event;
     while (window.pollEvent(event))
@@ -28,11 +28,13 @@ void pollEvents(sf::RenderWindow &window)
         case sf::Event::KeyReleased:
             if (event.key.code == sf::Keyboard::Space)
             {
+                stopHeroJump(hero);
             }
             break;
         case sf::Event::KeyPressed:
             if (event.key.code == sf::Keyboard::Space)
             {
+                updateJumpHeroState(hero);
             }
             break;
         default:
@@ -41,12 +43,19 @@ void pollEvents(sf::RenderWindow &window)
     }
 }
 
+void update(Hero &hero, std::vector<Segment> &segments, float dt)
+{
+    std::vector<Wall> walls = getAllWalls(segments);
+    updateHeroPosition(hero, walls, dt);
+}
+
 void redrawFrame(sf::RenderWindow &window, Map map, Ground ground, Hero hero, std::vector<Segment> &segments)
 {
     window.clear();
     window.draw(map.img);
     drawWalls(window, segments);
     window.draw(ground.img);
+    hero.img.setPosition(hero.position);
     window.draw(hero.img);
     window.display();
 }
@@ -74,7 +83,10 @@ int main()
 
     while (window.isOpen())
     {
-        pollEvents(window);
+        const float dt = clock.restart().asSeconds();
+
+        pollEvents(window, hero);
+        update(hero, segments, dt);
         redrawFrame(window, map, ground, hero, segments);
     }
 }

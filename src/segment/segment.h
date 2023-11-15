@@ -35,3 +35,18 @@ void drawWalls(sf::RenderWindow &window, std::vector<Segment> &segments)
         }
     }
 }
+
+std::vector<Wall> getAllWalls(std::vector<Segment> segments)
+{
+    std::vector<Wall> walls;
+    const int segmentCount = (int)segments.size();
+    for (int i = 0; i < segmentCount; i++)
+    {
+        int wallsCountOfSegment = (int)segments[i].walls.size();
+        for (int j = 0; j < wallsCountOfSegment; j++)
+        {
+            walls.push_back(segments[i].walls[j]);
+        }
+    }
+    return walls;
+}

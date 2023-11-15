@@ -4,6 +4,7 @@ struct Hero
 {
     int jumpState;
     char direction;
+    bool isAlive;
     sf::Sprite img;
     sf::Texture texture;
     sf::Vector2f position;
@@ -23,6 +24,7 @@ void initHero(Hero &hero)
 {
     hero.jumpState = 0;
     hero.direction = 'l';
+    hero.isAlive = true;
     hero.position = {473, 633};
     initHeroTexture(hero.texture);
     hero.img.setTexture(hero.texture);

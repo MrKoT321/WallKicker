@@ -45,8 +45,11 @@ void pollEvents(sf::RenderWindow &window, Hero &hero)
 
 void update(Hero &hero, std::vector<Segment> &segments, float dt)
 {
-    std::vector<Wall> walls = getAllWalls(segments);
-    updateHeroPosition(hero, walls, dt);
+    if (hero.isAlive)
+    {
+        std::vector<Wall> walls = getAllWalls(segments);
+        updateHeroPosition(hero, walls, dt);
+    }
 }
 
 void redrawFrame(sf::RenderWindow &window, Map map, Ground ground, Hero hero, std::vector<Segment> &segments)

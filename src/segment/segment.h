@@ -3,8 +3,6 @@
 struct Segment
 {
     const int maxWallCountOnLevel = 15;
-    Wall startCheckpoint;
-    Wall endCheckpoint;
     char startCheckpointDir;
     char endCheckpointDir;
     std::vector<Wall> walls;
@@ -19,7 +17,7 @@ void initSegments(std::vector<Segment> &segments)
     const std::vector<char> wallsTypes = {'_', '_', '_'};
     const std::vector<int> wallsSize = {5, 10, 3};
     segments[0].startCheckpointDir = 'l';
-    segments[0].endCheckpointDir = 'l';
+    segments[0].endCheckpointDir = 'r';
     initWalls(segments[0].walls, countWallsLvl1, wallsPosition, wallsTypes, wallsSize);
 }
 

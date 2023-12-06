@@ -45,17 +45,18 @@ void pollEvents(sf::RenderWindow &window, Hero &hero)
 
 void updateScreen(sf::Vector2u windowSize, Hero &hero, std::vector<Segment> &segments, Ground &ground, float dt)
 {
-    std::cout << hero.position.y << " -- " << windowSize.y * 0.3 << std::endl;
-    if (hero.position.y < windowSize.y * 0.3)
+    const positionToChangeScreen = windowSize.y * 0.3;
+    if (hero.position.y < positionToChangeScreen)
     {
+        const speedOfScreenChange = 100;
         const int segmentCount = (int)segments.size();
-        ground.position.y += 100 * dt;
+        ground.position.y += speedOfScreenChange * dt;
         for (int i = 0; i < segmentCount; i++)
         {
             int wallsCountOfSegment = (int)segments[i].walls.size();
             for (int j = 0; j < wallsCountOfSegment; j++)
             {
-                segments[i].walls[j].position.y += 100 * dt;
+                segments[i].walls[j].position.y += speedOfScreenChange * dt;
             }
         }
     }

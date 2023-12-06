@@ -10,12 +10,12 @@ struct Segment
 
 void initSegments(std::vector<Segment> &segments)
 {
-    const int countWallsLvl1 = 3;
+    const int countWallsLvl1 = 4;
     for (int i = 0; i < countWallsLvl1; i++)
         segments[0].walls.push_back(Wall());
-    const std::vector<sf::Vector2f> wallsPosition = {{345, 400}, {635, 0}, {200, 10}};
-    const std::vector<char> wallsTypes = {'_', '_', '_'};
-    const std::vector<int> wallsSize = {5, 10, 3};
+    const std::vector<sf::Vector2f> wallsPosition = {{345, 400}, {635, 0}, {200, 10}, {200, -70}};
+    const std::vector<char> wallsTypes = {'_wall', '_wall', '_wall', '_checkpoint_enabled'};
+    const std::vector<int> wallsSize = {5, 10, 3, 1};
     segments[0].startCheckpointDir = 'l';
     segments[0].endCheckpointDir = 'r';
     initWalls(segments[0].walls, countWallsLvl1, wallsPosition, wallsTypes, wallsSize);

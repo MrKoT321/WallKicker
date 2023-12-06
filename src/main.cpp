@@ -7,12 +7,12 @@
 #include "hero/hero.h"
 #include "segment/segment.h"
 
-void initStructures(Map &map, Ground &ground, Hero &hero, std::vector<Segment> &segments)
+void initStructures(Map &map, Ground &ground, Hero &hero, std::vector<Segment> &segments, sf::RenderWindow &window)
 {
     initMap(map);
     initGround(ground);
     initHero(hero);
-    initSegments(segments);
+    initSegments(segments, window);
 }
 
 void pollEvents(sf::RenderWindow &window, Hero &hero)
@@ -107,7 +107,7 @@ int main()
         sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}),
         "Wall Kicker", sf::Style::Default, settings);
 
-    initStructures(map, ground, hero, segments);
+    initStructures(map, ground, hero, segments, window);
 
     while (window.isOpen())
     {

@@ -23,11 +23,10 @@ void initWalls(std::vector<Wall> &walls, int countWalls, std::vector<sf::Vector2
         walls[i].position = wallsPositions[i];
         walls[i].img.setPosition(wallsPositions[i]);
         walls[i].size = wallsSize[i];
-        std::cout << walls[i].position.y << std::endl;
     }
 }
 
-void initWallsNextSegment(std::vector<Wall> &walls, float lvl2SegmentStart, int countWalls, std::vector<sf::Vector2f> wallsPositions, std::vector<std::string> wallsTypes, std::vector<int> wallsSize)
+void initWallsNextSegment(std::vector<Wall> &walls, float segmentStart, int countWalls, std::vector<sf::Vector2f> wallsPositions, std::vector<std::string> wallsTypes, std::vector<int> wallsSize)
 {
     for (int i = 0; i < countWalls; i++)
     {
@@ -37,11 +36,10 @@ void initWallsNextSegment(std::vector<Wall> &walls, float lvl2SegmentStart, int 
             std::cout << "Fail to load image" << std::endl;
             return;
         }
-        wallsPositions[i].y += lvl2SegmentStart;
+        wallsPositions[i].y += segmentStart;
         walls[i].img.setTexture(walls[i].texture);
         walls[i].position = wallsPositions[i];
         walls[i].img.setPosition(wallsPositions[i]);
         walls[i].size = wallsSize[i];
-        std::cout << walls[i].position.y << std::endl;
     }
 }

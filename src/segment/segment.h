@@ -2,10 +2,10 @@
 
 struct Segment
 {
-    const int maxWallCountOnLevel = 15;
     char startCheckpointDir;
     char endCheckpointDir;
     std::vector<Wall> walls;
+    bool isActive = false;
 };
 
 void initSegments(std::vector<Segment> &segments, sf::RenderWindow &window)
@@ -18,6 +18,7 @@ void initSegments(std::vector<Segment> &segments, sf::RenderWindow &window)
     const std::vector<int> wallsSizeLvl1 = {5, 10, 3, 1};
     segments[0].startCheckpointDir = 'l';
     segments[0].endCheckpointDir = 'r';
+    segments[0].isActive = true;
     initWalls(segments[0].walls, countWallsLvl1, wallsPositionLvl1, wallsTypesLvl1, wallsSizeLvl1);
 
     const int countWallsLvl2 = 4;
@@ -30,7 +31,7 @@ void initSegments(std::vector<Segment> &segments, sf::RenderWindow &window)
     const std::vector<int> wallsSizeLvl2 = {5, 10, 3, 1};
     segments[1].startCheckpointDir = 'l';
     segments[1].endCheckpointDir = 'r';
-    initWallsNextSegment(segments[1].walls, lvl2SegmentStart, countWallsLvl1, wallsPositionLvl1, wallsTypesLvl1, wallsSizeLvl1);
+    initWallsNextSegment(segments[1].walls, lvl2SegmentStart, countWallsLvl2, wallsPositionLvl2, wallsTypesLvl2, wallsSizeLvl2);
 }
 
 void drawWalls(sf::RenderWindow &window, std::vector<Segment> &segments)
@@ -60,4 +61,45 @@ std::vector<Wall> getAllWalls(std::vector<Segment> segments)
         }
     }
     return walls;
+}
+
+void initNextSegment(std::vector<Segment> &segments, sf::RenderWindow &window)
+{
+    int activeSegmentIndex = 0;
+    if (segments[1].isActive)
+        activeSegmentIndex = 1;
+    std::cout << activeSegmentIndex << std::endl;
+
+    segments[activeSegmentIndex].isActive = false;
+    segments[1 - activeSegmentIndex].isActive = true;
+
+    const int countWalls = 4;
+    const sf::Vector2u windowSize = window.getSize();
+    for (int i = 0; i < countWalls; i++)
+        segments[activeSegmentIndex].walls.push_back(Wall());
+    const int prevSegmentLastWallIndex = (int)segments[1 - activeSegmentIndex].walls.size() - 1;
+    const float segmentStart = segments[1 - activeSegmentIndex].walls[prevSegmentLastWallIndex].position.y - 40 - windowSize.y;
+    std::cout << segmentStart << std::endl;
+    const std::vector<sf::Vector2f> wallsPosition = {{200, 400}, {635, 0}, {200, 10}, {200, -120}};
+    const std::vector<std::string> wallsTypes = {"_wall", "_wall", "_wall", "_checkpoint_enabled"};
+    const std::vector<int> wallsSize = {5, 10, 3, 1};
+    segments[activeSegmentIndex].startCheckpointDir = 'l';
+    segments[activeSegmentIndex].endCheckpointDir = 'r';
+    initWallsNextSegment(segments[activeSegmentIndex].walls, segmentStart, countWalls, wallsPosition, wallsTypes, wallsSize);
+}
+
+sf::Vector2f getCheckpointFromActiveSegment(std::vector<Segment> segments)
+{
+    int activeSegmentIndex = 0;
+    if (segments[1].isActive)
+        activeSegmentIndex = 1;
+    const int activeSegmentWallsCount = (int)segments[activeSegmentIndex].walls.size();
+    return segments[activeSegmentIndex].walls[activeSegmentWallsCount - 1].position;
+}
+
+bool isPrevSegmentEnded(std::vector<Segment> segments, sf::RenderWindow &window)
+{
+    const sf::Vector2f prevCheckpointPosition = getCheckpointFromActiveSegment(segments);
+    const sf::Vector2u windowSize = window.getSize();
+    return windowSize.y + 20 < prevCheckpointPosition.y;
 }

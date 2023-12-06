@@ -33,6 +33,8 @@ void initHero(Hero &hero)
 
 void updateHeroPosition(Hero &hero, std::vector<Wall> walls, float dt)
 {
+    const int wallsCount = (int)walls.size();
+    const int oneWallHeigth = 80;
     if (hero.jumpState == 1 || hero.jumpState == 3)
     {
         if (hero.direction == 'l')
@@ -47,18 +49,24 @@ void updateHeroPosition(Hero &hero, std::vector<Wall> walls, float dt)
         else
             hero.position += {120 * dt, 200 * dt};
     }
+    if (hero.jumpState == 7)
+    {
+        hero.position += {0, 120 * dt};
+    }
     if (hero.jumpState == 5 || hero.jumpState == 6)
     {
         hero.position += {0, 40 * dt};
     }
     if (hero.jumpState != 0 && hero.jumpState != 5 && hero.jumpState != 6)
     {
-        const int wallsCount = (int)walls.size();
         const int heroWidth = 54;
         const int wallWidth = 20;
+        const bool sos = hero.position.y > walls[0].position.y;
+        const bool gai = hero.position.y < walls[0].position.y + oneWallHeigth * walls[0].size;
         for (int i = 0; i < wallsCount; i++)
         {
-            if (hero.position.x + heroWidth >= walls[i].position.x && hero.position.x < walls[i].position.x + wallWidth)
+            if (hero.position.x + heroWidth >= walls[i].position.x && hero.position.x < walls[i].position.x + wallWidth &&
+                hero.position.y > walls[i].position.y && hero.position.y < walls[i].position.y + oneWallHeigth * walls[i].size)
             {
                 if (hero.jumpState == 1 || hero.jumpState == 3)
                     hero.jumpState = 6;

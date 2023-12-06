@@ -46,3 +46,9 @@ initGround(Ground &ground)
     ground.img.setTexture(ground.texture);
     ground.img.setPosition(ground.position);
 }
+
+drawGround(sf::RenderWindow &window, Ground &ground)
+{
+    ground.img.setPosition(ground.position);
+    window.draw(ground.img);
+}

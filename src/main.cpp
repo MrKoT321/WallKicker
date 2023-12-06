@@ -43,12 +43,36 @@ void pollEvents(sf::RenderWindow &window, Hero &hero)
     }
 }
 
-void update(Hero &hero, std::vector<Segment> &segments, float dt)
+void updateScreen(sf::Vector2u windowSize, Hero &hero, std::vector<Segment> &segments, Ground &ground, float dt)
 {
+    std::cout << hero.position.y << " -- " << windowSize.y * 0.3 << std::endl;
+    if (hero.position.y < windowSize.y * 0.3)
+    {
+        const int segmentCount = (int)segments.size();
+        ground.position.y += 100 * dt;
+        for (int i = 0; i < segmentCount; i++)
+        {
+            int wallsCountOfSegment = (int)segments[i].walls.size();
+            for (int j = 0; j < wallsCountOfSegment; j++)
+            {
+                segments[i].walls[j].position.y += 100 * dt;
+            }
+        }
+    }
+}
+
+void update(Hero &hero, std::vector<Segment> &segments, sf::RenderWindow &window, Ground &ground, float dt)
+{
+    const sf::Vector2u windowSize = window.getSize();
     if (hero.isAlive)
     {
         std::vector<Wall> walls = getAllWalls(segments);
         updateHeroPosition(hero, walls, dt);
+        updateScreen(windowSize, hero, segments, ground, dt);
+    }
+    if (hero.position.y + 100 > windowSize.y)
+    {
+        hero.isAlive = false;
     }
 }
 
@@ -57,7 +81,7 @@ void redrawFrame(sf::RenderWindow &window, Map map, Ground ground, Hero hero, st
     window.clear();
     window.draw(map.img);
     drawWalls(window, segments);
-    window.draw(ground.img);
+    drawGround(window, ground);
     hero.img.setPosition(hero.position);
     window.draw(hero.img);
     window.display();
@@ -89,7 +113,7 @@ int main()
         const float dt = clock.restart().asSeconds();
 
         pollEvents(window, hero);
-        update(hero, segments, dt);
+        update(hero, segments, window, ground, dt);
         redrawFrame(window, map, ground, hero, segments);
     }
 }

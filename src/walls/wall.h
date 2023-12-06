@@ -22,5 +22,6 @@ void initWalls(std::vector<Wall> &walls, int countWalls, std::vector<sf::Vector2
         walls[i].img.setTexture(walls[i].texture);
         walls[i].position = wallsPositions[i];
         walls[i].img.setPosition(wallsPositions[i]);
+        walls[i].size = wallsSize[i];
     }
 }

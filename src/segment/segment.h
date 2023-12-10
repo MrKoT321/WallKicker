@@ -68,18 +68,17 @@ void initNextSegment(std::vector<Segment> &segments, sf::RenderWindow &window)
     int activeSegmentIndex = 0;
     if (segments[1].isActive)
         activeSegmentIndex = 1;
-    std::cout << activeSegmentIndex << std::endl;
 
     segments[activeSegmentIndex].isActive = false;
     segments[1 - activeSegmentIndex].isActive = true;
 
     const int countWalls = 4;
-    const sf::Vector2u windowSize = window.getSize();
+    segments[activeSegmentIndex].walls.clear();
     for (int i = 0; i < countWalls; i++)
         segments[activeSegmentIndex].walls.push_back(Wall());
     const int prevSegmentLastWallIndex = (int)segments[1 - activeSegmentIndex].walls.size() - 1;
+    const sf::Vector2u windowSize = window.getSize();
     const float segmentStart = segments[1 - activeSegmentIndex].walls[prevSegmentLastWallIndex].position.y - 40 - windowSize.y;
-    std::cout << segmentStart << std::endl;
     const std::vector<sf::Vector2f> wallsPosition = {{200, 400}, {635, 0}, {200, 10}, {200, -120}};
     const std::vector<std::string> wallsTypes = {"_wall", "_wall", "_wall", "_checkpoint_enabled"};
     const std::vector<int> wallsSize = {5, 10, 3, 1};

@@ -65,11 +65,7 @@ void updateScreen(sf::Vector2u windowSize, Hero &hero, std::vector<Segment> &seg
 void updateWalls(std::vector<Segment> &segments, sf::RenderWindow &window)
 {
     if (isPrevSegmentEnded(segments, window))
-    {
-        sf::Vector2f asda = getCheckpointFromActiveSegment(segments);
-        // std::cout << asda.x << " -- " << asda.y << std::endl;
         initNextSegment(segments, window);
-    }
 }
 
 void update(Hero &hero, std::vector<Segment> &segments, sf::RenderWindow &window, Ground &ground, float dt)

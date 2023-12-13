@@ -102,3 +102,16 @@ bool isPrevSegmentEnded(std::vector<Segment> segments, sf::RenderWindow &window)
     const sf::Vector2u windowSize = window.getSize();
     return windowSize.y + 20 < prevCheckpointPosition.y;
 }
+
+void updateSegmentPositionWithScreenMove(std::vector<Segment> &segments, int screenChangeSpeed, float dt)
+{
+    const int segmentCount = (int)segments.size();
+    for (int i = 0; i < segmentCount; i++)
+    {
+        int wallsCountOfSegment = (int)segments[i].walls.size();
+        for (int j = 0; j < wallsCountOfSegment; j++)
+        {
+            segments[i].walls[j].position.y += screenChangeSpeed * dt;
+        }
+    }
+}

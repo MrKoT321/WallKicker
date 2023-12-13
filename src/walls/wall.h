@@ -43,3 +43,7 @@ void initWallsNextSegment(std::vector<Wall> &walls, float segmentStart, int coun
         walls[i].size = wallsSize[i];
     }
 }
+
+void updateCheckpointImgWithLvlComplete(std::vector<Wall> &walls)
+{
+}

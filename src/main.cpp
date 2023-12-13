@@ -50,16 +50,8 @@ void updateScreen(sf::Vector2u windowSize, Hero &hero, std::vector<Segment> &seg
     {
         const int screenChangeSpeed = 200;
         updateHeroPositionWithScreenMove(hero, screenChangeSpeed, dt);
-        const int segmentCount = (int)segments.size();
-        ground.position.y += screenChangeSpeed * dt;
-        for (int i = 0; i < segmentCount; i++)
-        {
-            int wallsCountOfSegment = (int)segments[i].walls.size();
-            for (int j = 0; j < wallsCountOfSegment; j++)
-            {
-                segments[i].walls[j].position.y += screenChangeSpeed * dt;
-            }
-        }
+        updateGroundPositionWithScreenMove(ground, screenChangeSpeed, dt);
+        updateSegmentPositionWithScreenMove(segments, screenChangeSpeed, dt);
     }
 }
 

@@ -33,13 +33,13 @@ void initGroundTexture(sf::Texture &texture)
     }
 }
 
-initMap(Map &map)
+void initMap(Map &map)
 {
     initMapTexture(map.texture);
     map.img.setTexture(map.texture);
 }
 
-initGround(Ground &ground)
+void initGround(Ground &ground)
 {
     ground.position = {0, 724};
     initGroundTexture(ground.texture);
@@ -47,8 +47,13 @@ initGround(Ground &ground)
     ground.img.setPosition(ground.position);
 }
 
-drawGround(sf::RenderWindow &window, Ground &ground)
+void drawGround(sf::RenderWindow &window, Ground &ground)
 {
     ground.img.setPosition(ground.position);
     window.draw(ground.img);
+}
+
+void updateGroundPositionWithScreenMove(Ground &ground, int screenChangeSpeed, float dt)
+{
+    ground.position.y += screenChangeSpeed * dt;
 }

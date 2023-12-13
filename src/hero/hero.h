@@ -5,6 +5,8 @@ struct Hero
     int jumpState;
     char direction;
     bool isAlive;
+    float speedX = 300;
+    float speedY = 400;
     sf::Sprite img;
     sf::Texture texture;
     sf::Vector2f position;
@@ -33,25 +35,30 @@ void initHero(Hero &hero)
 
 void updateHeroPosition(Hero &hero, std::vector<Wall> walls, float dt)
 {
+    const int gravity = 30;
     const int wallsCount = (int)walls.size();
     const int oneWallHeigth = 80;
     if (hero.jumpState == 1 || hero.jumpState == 3)
     {
         if (hero.direction == 'l')
-            hero.position += {-120 * dt, -200 * dt};
+            hero.position += {-hero.speedX * dt, -hero.speedY * dt};
         else
-            hero.position += {120 * dt, -200 * dt};
+            hero.position += {hero.speedX * dt, -hero.speedY * dt};
+        hero.speedY -= gravity;
     }
     if (hero.jumpState == 2 || hero.jumpState == 4)
     {
+        if (hero.speedY > 0)
+            hero.speedY = 0;
         if (hero.direction == 'l')
-            hero.position += {-120 * dt, 200 * dt};
+            hero.position += {-hero.speedX * dt, -hero.speedY * dt};
         else
-            hero.position += {120 * dt, 200 * dt};
+            hero.position += {hero.speedX * dt, -hero.speedY * dt};
+        hero.speedY -= gravity;
     }
     if (hero.jumpState == 7)
     {
-        hero.position += {0, 120 * dt};
+        hero.position += {0, hero.speedX * dt};
     }
     if (hero.jumpState == 5 || hero.jumpState == 6)
     {
@@ -81,14 +88,23 @@ void updateHeroPosition(Hero &hero, std::vector<Wall> walls, float dt)
     }
 }
 
+void updateHeroPositionWithScreenMove(Hero &hero, int screenChangeSpeed, float dt)
+{
+    if (hero.jumpState == 5 || hero.jumpState == 6)
+        hero.position += {0, screenChangeSpeed * dt};
+}
+
 void updateJumpHeroState(Hero &hero)
 {
+    const float startSpeedY = 400;
     if (hero.jumpState == 0 || hero.jumpState == 5)
     {
         hero.jumpState = 1;
+        hero.speedY = startSpeedY;
     }
     if (hero.jumpState == 2)
     {
+        hero.speedY = startSpeedY;
         hero.jumpState = 3;
         if (hero.direction == 'l')
             hero.direction = 'r';

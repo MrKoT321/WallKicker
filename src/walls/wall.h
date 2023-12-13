@@ -3,7 +3,6 @@
 struct Wall
 {
     int size;
-    char type;
     sf::Sprite img;
     sf::Texture texture;
     sf::Vector2f position;
@@ -44,6 +43,13 @@ void initWallsNextSegment(std::vector<Wall> &walls, float segmentStart, int coun
     }
 }
 
-void updateCheckpointImgWithLvlComplete(std::vector<Wall> &walls)
+void updateCheckpointImgWithLvlComplete(Wall &wall)
 {
+    if (!wall.texture.loadFromFile("../images/walls/1_checkpoint_active.png"))
+    {
+        // error...
+        std::cout << "Fail to load image" << std::endl;
+        return;
+    }
+    wall.img.setTexture(wall.texture);
 }

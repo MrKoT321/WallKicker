@@ -61,6 +61,12 @@ void updateWalls(std::vector<Segment> &segments, sf::RenderWindow &window)
         initNextSegment(segments, window);
 }
 
+void updateCheckpoints(std::vector<Segment> &segments, Hero &hero)
+{
+    if (isCurrSegmentCompleted(segments, hero.position.y))
+        updateSegmentWithLvlComplete(segments);
+}
+
 void update(Hero &hero, std::vector<Segment> &segments, sf::RenderWindow &window, Ground &ground, float dt)
 {
     const sf::Vector2u windowSize = window.getSize();
@@ -70,6 +76,7 @@ void update(Hero &hero, std::vector<Segment> &segments, sf::RenderWindow &window
         updateScreen(windowSize, hero, segments, ground, dt);
         updateWalls(segments, window);
         updateHeroPosition(hero, walls, dt);
+        updateCheckpoints(segments, hero);
     }
     if (hero.position.y + 100 > windowSize.y)
     {

@@ -6,6 +6,7 @@ struct Segment
     char endCheckpointDir;
     std::vector<Wall> walls;
     bool isActive = false;
+    bool isCheckpointPassed = false;
 };
 
 void initSegments(std::vector<Segment> &segments, sf::RenderWindow &window)
@@ -103,6 +104,18 @@ bool isPrevSegmentEnded(std::vector<Segment> segments, sf::RenderWindow &window)
     return windowSize.y + 20 < prevCheckpointPosition.y;
 }
 
+bool isCurrSegmentCompleted(std::vector<Segment> segments, float heroPositionY)
+{
+    int activeSegmentIndex = 0;
+    if (segments[1].isActive)
+        activeSegmentIndex = 1;
+    if (segments[activeSegmentIndex].isCheckpointPassed)
+        return false;
+    const int activeSegmentWallsCount = (int)segments[activeSegmentIndex].walls.size();
+    float lastCurrWallPositionY = segments[activeSegmentIndex].walls[activeSegmentWallsCount - 1].position.y;
+    return heroPositionY < lastCurrWallPositionY;
+}
+
 void updateSegmentPositionWithScreenMove(std::vector<Segment> &segments, int screenChangeSpeed, float dt)
 {
     const int segmentCount = (int)segments.size();
@@ -114,4 +127,14 @@ void updateSegmentPositionWithScreenMove(std::vector<Segment> &segments, int scr
             segments[i].walls[j].position.y += screenChangeSpeed * dt;
         }
     }
+}
+
+void updateSegmentWithLvlComplete(std::vector<Segment> &segments)
+{
+    int activeSegmentIndex = 0;
+    if (segments[1].isActive)
+        activeSegmentIndex = 1;
+    const int activeSegmentWallsCount = (int)segments[activeSegmentIndex].walls.size();
+    updateCheckpointImgWithLvlComplete(segments[activeSegmentIndex].walls[activeSegmentWallsCount - 1]);
+    segments[activeSegmentIndex].isCheckpointPassed = true;
 }

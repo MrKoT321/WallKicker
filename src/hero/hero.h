@@ -6,7 +6,7 @@ struct Hero
     char direction;
     bool isAlive;
     float speedX = 300;
-    float speedY = 400;
+    float speedY = 500;
     sf::Sprite img;
     sf::Texture texture;
     sf::Vector2f position;
@@ -36,8 +36,6 @@ void initHero(Hero &hero)
 void updateHeroPosition(Hero &hero, std::vector<Wall> walls, float dt)
 {
     const int gravity = 30;
-    const int wallsCount = (int)walls.size();
-    const int oneWallHeigth = 80;
     if (hero.jumpState == 1 || hero.jumpState == 3)
     {
         if (hero.direction == 'l')
@@ -67,13 +65,14 @@ void updateHeroPosition(Hero &hero, std::vector<Wall> walls, float dt)
     if (hero.jumpState != 0 && hero.jumpState != 5 && hero.jumpState != 6)
     {
         const int heroWidth = 54;
+        const int heroHeigth = 97;
         const int wallWidth = 20;
-        const bool sos = hero.position.y > walls[0].position.y;
-        const bool gai = hero.position.y < walls[0].position.y + oneWallHeigth * walls[0].size;
+        const int oneWallHeigth = 80;
+        const int wallsCount = (int)walls.size();
         for (int i = 0; i < wallsCount; i++)
         {
             if (hero.position.x + heroWidth >= walls[i].position.x && hero.position.x < walls[i].position.x + wallWidth &&
-                hero.position.y > walls[i].position.y && hero.position.y < walls[i].position.y + oneWallHeigth * walls[i].size)
+                hero.position.y + heroHeigth >= walls[i].position.y && (hero.position.y < walls[i].position.y + (oneWallHeigth * walls[i].size)))
             {
                 if (hero.jumpState == 1 || hero.jumpState == 3)
                     hero.jumpState = 6;
@@ -90,13 +89,12 @@ void updateHeroPosition(Hero &hero, std::vector<Wall> walls, float dt)
 
 void updateHeroPositionWithScreenMove(Hero &hero, int screenChangeSpeed, float dt)
 {
-    if (hero.jumpState == 5 || hero.jumpState == 6)
-        hero.position += {0, screenChangeSpeed * dt};
+    hero.position += {0, screenChangeSpeed * dt};
 }
 
 void updateJumpHeroState(Hero &hero)
 {
-    const float startSpeedY = 400;
+    const float startSpeedY = 500;
     if (hero.jumpState == 0 || hero.jumpState == 5)
     {
         hero.jumpState = 1;

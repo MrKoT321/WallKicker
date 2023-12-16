@@ -79,7 +79,7 @@ void initNextSegment(std::vector<Segment> &segments, sf::RenderWindow &window)
         segments[activeSegmentIndex].walls.push_back(Wall());
     const int prevSegmentLastWallIndex = (int)segments[1 - activeSegmentIndex].walls.size() - 1;
     const sf::Vector2u windowSize = window.getSize();
-    const float segmentStart = segments[1 - activeSegmentIndex].walls[prevSegmentLastWallIndex].position.y - 40 - windowSize.y;
+    const float segmentStart = segments[1 - activeSegmentIndex].walls[prevSegmentLastWallIndex].position.y - 100 - windowSize.y;
     const std::vector<sf::Vector2f> wallsPosition = {{200, 400}, {635, 0}, {200, 10}, {200, -120}};
     const std::vector<std::string> wallsTypes = {"_wall", "_wall", "_wall", "_checkpoint_enabled"};
     const std::vector<int> wallsSize = {5, 10, 3, 1};

@@ -3,6 +3,7 @@
 struct Wall
 {
     int size;
+    char type;
     sf::Sprite img;
     sf::Texture texture;
     sf::Vector2f position;

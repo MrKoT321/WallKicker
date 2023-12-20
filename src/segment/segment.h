@@ -17,10 +17,11 @@ void initSegments(std::vector<Segment> &segments, sf::RenderWindow &window)
     const std::vector<sf::Vector2f> wallsPositionLvl1 = {{345, 400}, {635, 0}, {200, 10}, {200, -120}};
     const std::vector<std::string> wallsTypesLvl1 = {"_wall", "_wall", "_wall", "_checkpoint_enabled"};
     const std::vector<int> wallsSizeLvl1 = {5, 10, 3, 1};
+    const std::vector<char> wallsFeatureLvl1 = {'s', 's', 's', 'c'};
     segments[0].startCheckpointDir = 'l';
     segments[0].endCheckpointDir = 'r';
     segments[0].isActive = true;
-    initWalls(segments[0].walls, countWallsLvl1, wallsPositionLvl1, wallsTypesLvl1, wallsSizeLvl1);
+    initWallsSegment(segments[0].walls, countWallsLvl1, wallsPositionLvl1, wallsTypesLvl1, wallsSizeLvl1, wallsFeatureLvl1);
 
     const int countWallsLvl2 = 4;
     const sf::Vector2u windowSize = window.getSize();
@@ -30,9 +31,10 @@ void initSegments(std::vector<Segment> &segments, sf::RenderWindow &window)
     const std::vector<sf::Vector2f> wallsPositionLvl2 = {{200, 400}, {635, 0}, {200, 10}, {200, -120}};
     const std::vector<std::string> wallsTypesLvl2 = {"_wall", "_wall", "_wall", "_checkpoint_enabled"};
     const std::vector<int> wallsSizeLvl2 = {5, 10, 3, 1};
+    const std::vector<char> wallsFeatureLvl2 = {'s', 's', 's', 'c'};
     segments[1].startCheckpointDir = 'l';
     segments[1].endCheckpointDir = 'r';
-    initWallsNextSegment(segments[1].walls, lvl2SegmentStart, countWallsLvl2, wallsPositionLvl2, wallsTypesLvl2, wallsSizeLvl2);
+    initWallsSegment(segments[1].walls, countWallsLvl2, wallsPositionLvl2, wallsTypesLvl2, wallsSizeLvl2, wallsFeatureLvl2, lvl2SegmentStart);
 }
 
 void drawWalls(sf::RenderWindow &window, std::vector<Segment> &segments)
@@ -83,10 +85,11 @@ void initNextSegment(std::vector<Segment> &segments, sf::RenderWindow &window)
     const std::vector<sf::Vector2f> wallsPosition = {{200, 400}, {635, 0}, {200, 10}, {200, -120}};
     const std::vector<std::string> wallsTypes = {"_wall", "_wall", "_wall", "_checkpoint_enabled"};
     const std::vector<int> wallsSize = {5, 10, 3, 1};
+    const std::vector<char> wallsFeature = {'s', 's', 's', 'c'};
     segments[activeSegmentIndex].startCheckpointDir = 'l';
     segments[activeSegmentIndex].endCheckpointDir = 'r';
     segments[activeSegmentIndex].isCheckpointPassed = false;
-    initWallsNextSegment(segments[activeSegmentIndex].walls, segmentStart, countWalls, wallsPosition, wallsTypes, wallsSize);
+    initWallsSegment(segments[activeSegmentIndex].walls, countWalls, wallsPosition, wallsTypes, wallsSize, wallsFeature, segmentStart);
 }
 
 sf::Vector2f getCheckpointFromActiveSegment(std::vector<Segment> segments)

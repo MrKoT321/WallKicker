@@ -15,7 +15,6 @@ void initWalls(std::vector<Wall> &walls, int countWalls, std::vector<sf::Vector2
     {
         if (!walls[i].texture.loadFromFile("../images/walls/" + std::to_string(wallsSize[i]) + wallsTypes[i] + ".png"))
         {
-            // error...
             std::cout << "Fail to load image" << std::endl;
             return;
         }
@@ -32,7 +31,6 @@ void initWallsNextSegment(std::vector<Wall> &walls, float segmentStart, int coun
     {
         if (!walls[i].texture.loadFromFile("../images/walls/" + std::to_string(wallsSize[i]) + wallsTypes[i] + ".png"))
         {
-            // error...
             std::cout << "Fail to load image" << std::endl;
             return;
         }
@@ -48,7 +46,6 @@ void updateCheckpointImgWithLvlComplete(Wall &wall)
 {
     if (!wall.texture.loadFromFile("../images/walls/1_checkpoint_active.png"))
     {
-        // error...
         std::cout << "Fail to load image" << std::endl;
         return;
     }

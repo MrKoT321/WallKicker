@@ -8,32 +8,115 @@ struct Hero
     float speedX = 300;
     float speedY = 500;
     sf::Sprite img;
-    sf::Texture texture;
     sf::Vector2f position;
 };
 
-void initHeroTexture(sf::Texture &texture)
+struct HeroTextures
 {
-    if (!texture.loadFromFile("../images/hero/hero_stand.png"))
+    sf::Texture standTexture;
+    sf::Texture jumpTexture;
+    sf::Texture fallTexture;
+    sf::Texture startFlipTexture1;
+    sf::Texture startFlipTexture2;
+    sf::Texture flipTexture1;
+    sf::Texture flipTexture2;
+    sf::Texture flipTexture3;
+    sf::Texture hookTexture;
+};
+
+struct HeroExplodeSprite
+{
+    sf::Texture explodeTexture1;
+    sf::Texture explodeTexture2;
+    sf::Texture explodeTexture3;
+};
+
+void initHeroTexture(HeroTextures &heroTextures)
+{
+    if (!heroTextures.standTexture.loadFromFile("../images/hero/hero_stand.png"))
     {
-        // error...
-        std::cout << "Fail to load image" << std::endl;
-        return;
+        std::cout << "Fail to load stand image" << std::endl;
+    }
+    if (!heroTextures.jumpTexture.loadFromFile("../images/hero/hero_jump.png"))
+    {
+        std::cout << "Fail to load jump image" << std::endl;
+    }
+    if (!heroTextures.fallTexture.loadFromFile("../images/hero/hero_fall.png"))
+    {
+        std::cout << "Fail to load fall image" << std::endl;
+    }
+    if (!heroTextures.startFlipTexture1.loadFromFile("../images/hero/hero_start_flip1.png"))
+    {
+        std::cout << "Fail to load start flip 1 image" << std::endl;
+    }
+    if (!heroTextures.startFlipTexture2.loadFromFile("../images/hero/hero_start_flip2.png"))
+    {
+        std::cout << "Fail to load start flip 2 image" << std::endl;
+    }
+    if (!heroTextures.flipTexture1.loadFromFile("../images/hero/hero_flip1.png"))
+    {
+        std::cout << "Fail to load flip 1 image" << std::endl;
+    }
+    if (!heroTextures.flipTexture2.loadFromFile("../images/hero/hero_flip2.png"))
+    {
+        std::cout << "Fail to load flip 2 image" << std::endl;
+    }
+    if (!heroTextures.flipTexture3.loadFromFile("../images/hero/hero_flip3.png"))
+    {
+        std::cout << "Fail to load flip 3 image" << std::endl;
+    }
+    if (!heroTextures.hookTexture.loadFromFile("../images/hero/hero_hook.png"))
+    {
+        std::cout << "Fail to load hook image" << std::endl;
     }
 }
 
-void initHero(Hero &hero)
+void initHero(Hero &hero, HeroTextures &heroTextures)
 {
     hero.jumpState = 0;
     hero.direction = 'l';
     hero.isAlive = true;
     hero.position = {473, 633};
-    initHeroTexture(hero.texture);
-    hero.img.setTexture(hero.texture);
+    initHeroTexture(heroTextures);
+    hero.img.setTexture(heroTextures.standTexture);
     hero.img.setPosition(hero.position);
 }
 
-void updateHeroPosition(Hero &hero, std::vector<Wall> walls, float dt)
+void updateHeroSprite(Hero &hero, HeroTextures &heroTextures)
+{
+    if (hero.jumpState == 1)
+    {
+        if (hero.speedY >= 0)
+        {
+            hero.img.setTexture(heroTextures.jumpTexture);
+        }
+        else
+        {
+            hero.img.setTexture(heroTextures.fallTexture);
+        }
+    }
+    if (hero.jumpState == 2)
+        hero.img.setTexture(heroTextures.fallTexture);
+    if (hero.jumpState == 5 || hero.jumpState == 6)
+        hero.img.setTexture(heroTextures.hookTexture);
+}
+
+void updateHeroImgScale(Hero &hero)
+{
+    const int heroWidth = 54;
+    if (hero.direction == 'r')
+    {
+        hero.img.setScale(-1, 1);
+        hero.position.x += heroWidth;
+    }
+    else
+    {
+        hero.img.setScale(1, 1);
+        hero.position.x -= heroWidth;
+    }
+}
+
+void updateHeroPosition(Hero &hero, HeroTextures &heroTextures, std::vector<Wall> walls, float dt)
 {
     const int gravity = 30;
     if (hero.jumpState == 1 || hero.jumpState == 3)
@@ -71,7 +154,7 @@ void updateHeroPosition(Hero &hero, std::vector<Wall> walls, float dt)
         const int wallsCount = (int)walls.size();
         for (int i = 0; i < wallsCount; i++)
         {
-            if (hero.position.x + heroWidth >= walls[i].position.x && hero.position.x < walls[i].position.x + wallWidth &&
+            if (hero.position.x >= walls[i].position.x && hero.position.x < walls[i].position.x + wallWidth &&
                 hero.position.y + heroHeigth >= walls[i].position.y && (hero.position.y < walls[i].position.y + (oneWallHeigth * walls[i].size)))
             {
                 if (hero.jumpState == 1 || hero.jumpState == 3)
@@ -82,6 +165,7 @@ void updateHeroPosition(Hero &hero, std::vector<Wall> walls, float dt)
                     hero.direction = 'r';
                 else
                     hero.direction = 'l';
+                updateHeroSprite(hero, heroTextures);
             }
         }
     }
@@ -99,6 +183,7 @@ void updateJumpHeroState(Hero &hero)
     {
         hero.jumpState = 1;
         hero.speedY = startSpeedY;
+        updateHeroImgScale(hero);
     }
     if (hero.jumpState == 2)
     {
@@ -108,6 +193,7 @@ void updateJumpHeroState(Hero &hero)
             hero.direction = 'r';
         else
             hero.direction = 'l';
+        updateHeroImgScale(hero);
     }
 }
 

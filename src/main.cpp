@@ -7,15 +7,15 @@
 #include "hero/hero.h"
 #include "segment/segment.h"
 
-void initStructures(Map &map, Ground &ground, Hero &hero, std::vector<Segment> &segments, sf::RenderWindow &window)
+void initStructures(Map &map, Ground &ground, Hero &hero, HeroTextures &heroTextures, std::vector<Segment> &segments, sf::RenderWindow &window)
 {
     initMap(map);
     initGround(ground);
-    initHero(hero);
+    initHero(hero, heroTextures);
     initSegments(segments, window);
 }
 
-void pollEvents(sf::RenderWindow &window, Hero &hero)
+void pollEvents(sf::RenderWindow &window, Hero &hero, HeroTextures &heroTextures)
 {
     sf::Event event;
     while (window.pollEvent(event))
@@ -29,12 +29,14 @@ void pollEvents(sf::RenderWindow &window, Hero &hero)
             if (event.key.code == sf::Keyboard::Space)
             {
                 stopHeroJump(hero);
+                updateHeroSprite(hero, heroTextures);
             }
             break;
         case sf::Event::KeyPressed:
             if (event.key.code == sf::Keyboard::Space)
             {
                 updateJumpHeroState(hero);
+                updateHeroSprite(hero, heroTextures);
             }
             break;
         default:
@@ -45,7 +47,7 @@ void pollEvents(sf::RenderWindow &window, Hero &hero)
 
 void updateScreen(sf::Vector2u windowSize, Hero &hero, std::vector<Segment> &segments, Ground &ground, float dt)
 {
-    const float positionToChangeScreen = windowSize.y * 0.3;
+    const float positionToChangeScreen = windowSize.y * 0.4;
     if (hero.position.y < positionToChangeScreen)
     {
         const int screenChangeSpeed = 200;
@@ -67,7 +69,7 @@ void updateCheckpoints(std::vector<Segment> &segments, Hero &hero)
         updateSegmentWithLvlComplete(segments);
 }
 
-void update(Hero &hero, std::vector<Segment> &segments, sf::RenderWindow &window, Ground &ground, float dt)
+void update(Hero &hero, HeroTextures &heroTextures, std::vector<Segment> &segments, sf::RenderWindow &window, Ground &ground, float dt)
 {
     const sf::Vector2u windowSize = window.getSize();
     if (hero.isAlive)
@@ -75,7 +77,7 @@ void update(Hero &hero, std::vector<Segment> &segments, sf::RenderWindow &window
         std::vector<Wall> walls = getAllWalls(segments);
         updateScreen(windowSize, hero, segments, ground, dt);
         updateWalls(segments, window);
-        updateHeroPosition(hero, walls, dt);
+        updateHeroPosition(hero, heroTextures, walls, dt);
         updateCheckpoints(segments, hero);
     }
     if (hero.position.y + 100 > windowSize.y)
@@ -104,6 +106,7 @@ int main()
     Map map;
     Ground ground;
     Hero hero;
+    HeroTextures heroTextures;
     std::vector<Segment> segments;
     segments.push_back(Segment());
     segments.push_back(Segment());
@@ -114,14 +117,14 @@ int main()
         sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}),
         "Wall Kicker", sf::Style::Default, settings);
 
-    initStructures(map, ground, hero, segments, window);
+    initStructures(map, ground, hero, heroTextures, segments, window);
 
     while (window.isOpen())
     {
         const float dt = clock.restart().asSeconds();
 
-        pollEvents(window, hero);
-        update(hero, segments, window, ground, dt);
+        pollEvents(window, hero, heroTextures);
+        update(hero, heroTextures, segments, window, ground, dt);
         redrawFrame(window, map, ground, hero, segments);
     }
 }

@@ -17,9 +17,7 @@ void initMapTexture(sf::Texture &texture)
 {
     if (!texture.loadFromFile("../images/map/background.png"))
     {
-        // error...
         std::cout << "Fail to load image" << std::endl;
-        return;
     }
 }
 
@@ -27,9 +25,7 @@ void initGroundTexture(sf::Texture &texture)
 {
     if (!texture.loadFromFile("../images/map/ground.png"))
     {
-        // error...
         std::cout << "Fail to load image" << std::endl;
-        return;
     }
 }
 

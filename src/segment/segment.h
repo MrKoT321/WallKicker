@@ -85,6 +85,7 @@ void initNextSegment(std::vector<Segment> &segments, sf::RenderWindow &window)
     const std::vector<int> wallsSize = {5, 10, 3, 1};
     segments[activeSegmentIndex].startCheckpointDir = 'l';
     segments[activeSegmentIndex].endCheckpointDir = 'r';
+    segments[activeSegmentIndex].isCheckpointPassed = false;
     initWallsNextSegment(segments[activeSegmentIndex].walls, segmentStart, countWalls, wallsPosition, wallsTypes, wallsSize);
 }
 

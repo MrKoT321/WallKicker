@@ -5,6 +5,7 @@ struct Map
     sf::Texture texture;
     sf::Texture gameOverTexture;
     sf::Sprite img;
+    sf::Sprite gameOverImg;
 };
 
 struct Ground
@@ -38,6 +39,17 @@ void initMap(Map &map)
 {
     initMapTexture(map);
     map.img.setTexture(map.texture);
+    map.gameOverImg.setTexture(map.gameOverTexture);
+}
+
+void drawMap(sf::RenderWindow &window, Map &map)
+{
+    window.draw(map.img);
+}
+
+void drawEndGameScreen(sf::RenderWindow &window, Map &map)
+{
+    window.draw(map.gameOverImg);
 }
 
 void initGround(Ground &ground)

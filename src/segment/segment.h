@@ -11,10 +11,13 @@ struct Segment
 
 void initSegments(std::vector<Segment> &segments, sf::Vector2u windowSize)
 {
+    segments.clear();
+    segments.push_back(Segment());
+    segments.push_back(Segment());
     const int countWallsLvl1 = 4;
     for (int i = 0; i < countWallsLvl1; i++)
         segments[0].walls.push_back(Wall());
-    const std::vector<sf::Vector2f> wallsPositionLvl1 = {{345, 400}, {635, 0}, {200, 10}, {200, -120}};
+    const std::vector<sf::Vector2f> wallsPositionLvl1 = {{345, 400}, {635, 0}, {200, 10}, {200, -170}};
     const std::vector<std::string> wallsTypesLvl1 = {"_wall", "_wall", "_wall", "_checkpoint_enabled"};
     const std::vector<int> wallsSizeLvl1 = {5, 10, 3, 1};
     const std::vector<char> wallsFeatureLvl1 = {'s', 's', 's', 'c'};
@@ -26,8 +29,8 @@ void initSegments(std::vector<Segment> &segments, sf::Vector2u windowSize)
     const int countWallsLvl2 = 4;
     for (int i = 0; i < countWallsLvl2; i++)
         segments[1].walls.push_back(Wall());
-    const float lvl2SegmentStart = wallsPositionLvl1[countWallsLvl1 - 1].y - 40 - windowSize.y;
-    const std::vector<sf::Vector2f> wallsPositionLvl2 = {{200, 400}, {635, 0}, {200, 10}, {200, -120}};
+    const float lvl2SegmentStart = wallsPositionLvl1[countWallsLvl1 - 1].y - 120 - windowSize.y;
+    const std::vector<sf::Vector2f> wallsPositionLvl2 = {{200, 400}, {635, 0}, {200, 10}, {200, -170}};
     const std::vector<std::string> wallsTypesLvl2 = {"_wall", "_wall", "_wall", "_checkpoint_enabled"};
     const std::vector<int> wallsSizeLvl2 = {5, 10, 3, 1};
     const std::vector<char> wallsFeatureLvl2 = {'s', 's', 's', 'c'};
@@ -50,21 +53,6 @@ void drawWalls(sf::RenderWindow &window, std::vector<Segment> &segments)
     }
 }
 
-std::vector<Wall> getAllWalls(std::vector<Segment> segments)
-{
-    std::vector<Wall> walls;
-    const int segmentCount = (int)segments.size();
-    for (int i = 0; i < segmentCount; i++)
-    {
-        int wallsCountOfSegment = (int)segments[i].walls.size();
-        for (int j = 0; j < wallsCountOfSegment; j++)
-        {
-            walls.push_back(segments[i].walls[j]);
-        }
-    }
-    return walls;
-}
-
 void initNextSegment(std::vector<Segment> &segments, sf::Vector2u windowSize)
 {
     int activeSegmentIndex = 0;
@@ -79,8 +67,8 @@ void initNextSegment(std::vector<Segment> &segments, sf::Vector2u windowSize)
     for (int i = 0; i < countWalls; i++)
         segments[activeSegmentIndex].walls.push_back(Wall());
     const int prevSegmentLastWallIndex = (int)segments[1 - activeSegmentIndex].walls.size() - 1;
-    const float segmentStart = segments[1 - activeSegmentIndex].walls[prevSegmentLastWallIndex].position.y - 100 - windowSize.y;
-    const std::vector<sf::Vector2f> wallsPosition = {{200, 400}, {635, 0}, {200, 10}, {200, -120}};
+    const float segmentStart = segments[1 - activeSegmentIndex].walls[prevSegmentLastWallIndex].position.y - 120 - windowSize.y;
+    const std::vector<sf::Vector2f> wallsPosition = {{200, 400}, {635, 0}, {200, 10}, {200, -170}};
     const std::vector<std::string> wallsTypes = {"_wall", "_wall", "_wall", "_checkpoint_enabled"};
     const std::vector<int> wallsSize = {5, 10, 3, 1};
     const std::vector<char> wallsFeature = {'s', 's', 's', 'c'};

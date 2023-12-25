@@ -35,7 +35,10 @@ void pollEvents(sf::RenderWindow &window, Hero &hero, HeroTextures &heroTextures
             {
                 stopHeroJump(hero);
                 updateHeroSprite(hero, heroTextures);
+                break;
             }
+            if (event.key.code == sf::Keyboard::Return)
+                restartGame(hero);
             break;
         case sf::Event::KeyPressed:
             if (event.key.code == sf::Keyboard::Space)
@@ -78,15 +81,16 @@ void update(Hero &hero, HeroTextures &heroTextures, std::vector<Segment> &segmen
 {
     if (isHeroAlive(hero))
     {
+        updateHeroPosition(hero, heroTextures, segments[0].walls, segments[1].walls, dt);
         updateScreen(getWindowSize(window), hero, segments, ground, dt);
         updateWalls(segments, window);
-        updateHeroPosition(hero, heroTextures, segments[0].walls, segments[1].walls, dt);
         updateCheckpoints(segments, hero);
     }
     else
     {
+        // hero dead
     }
-    if (isHeroDead(getWindowSize(window), hero) && isHeroAlive(hero))
+    if (isHeroShouldDead(getWindowSize(window), hero) && isHeroAlive(hero))
     {
         setHeroDead(hero);
     }
@@ -95,11 +99,12 @@ void update(Hero &hero, HeroTextures &heroTextures, std::vector<Segment> &segmen
 void redrawFrame(sf::RenderWindow &window, Map map, Ground ground, Hero hero, std::vector<Segment> &segments)
 {
     window.clear();
-    window.draw(map.img);
+    drawMap(window, map);
     drawWalls(window, segments);
     drawGround(window, ground);
-    hero.img.setPosition(hero.position);
-    window.draw(hero.img);
+    drawHero(window, hero);
+    if (!isHeroAlive(hero))
+        drawEndGameScreen(window, map);
     window.display();
 }
 
@@ -109,13 +114,12 @@ int main()
     constexpr unsigned WINDOW_HEIGHT = 800;
 
     sf::Clock clock;
+    int score = 0;
     Map map;
     Ground ground;
     Hero hero;
     HeroTextures heroTextures;
     std::vector<Segment> segments;
-    segments.push_back(Segment());
-    segments.push_back(Segment());
 
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
@@ -128,9 +132,10 @@ int main()
     while (window.isOpen())
     {
         const float dt = clock.restart().asSeconds();
-
         pollEvents(window, hero, heroTextures);
         update(hero, heroTextures, segments, window, ground, dt);
         redrawFrame(window, map, ground, hero, segments);
+        if (isGameRestarted(hero))
+            initStructures(map, ground, hero, heroTextures, segments, window);
     }
 }

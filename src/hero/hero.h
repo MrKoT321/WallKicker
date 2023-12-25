@@ -5,10 +5,11 @@ struct Hero
     int jumpState;
     char direction;
     bool isAlive;
+    bool isRestart;
     float speedX = 300;
     float speedY = 500;
-    sf::Sprite img;
     sf::Vector2f position;
+    sf::Sprite img;
 };
 
 struct HeroTextures
@@ -75,11 +76,18 @@ void initHero(Hero &hero, HeroTextures &heroTextures)
 {
     hero.jumpState = 0;
     hero.direction = 'l';
+    hero.isRestart = false;
     hero.isAlive = true;
     hero.position = {473, 633};
     initHeroTexture(heroTextures);
     hero.img.setTexture(heroTextures.standTexture);
     hero.img.setPosition(hero.position);
+}
+
+void drawHero(sf::RenderWindow &window, Hero &hero)
+{
+    hero.img.setPosition(hero.position);
+    window.draw(hero.img);
 }
 
 bool isHeroOnWall(Hero &hero)
@@ -233,7 +241,18 @@ bool isHeroAlive(Hero hero)
     return hero.isAlive;
 }
 
-bool isHeroDead(sf::Vector2u windowSize, Hero hero)
+bool isHeroShouldDead(sf::Vector2u windowSize, Hero hero)
 {
     return hero.position.y + 100 > windowSize.y;
+}
+
+void restartGame(Hero &hero)
+{
+    if (!isHeroAlive(hero))
+        hero.isRestart = true;
+}
+
+bool isGameRestarted(Hero hero)
+{
+    return hero.isRestart;
 }

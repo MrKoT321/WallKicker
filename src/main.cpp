@@ -17,7 +17,7 @@ void initStructures(Map &map, Ground &ground, Hero &hero, HeroTextures &heroText
     initMap(map);
     initGround(ground);
     initHero(hero, heroTextures);
-    initSegments(segments, window);
+    initSegments(segments, getWindowSize(window));
 }
 
 void pollEvents(sf::RenderWindow &window, Hero &hero, HeroTextures &heroTextures)
@@ -64,8 +64,8 @@ void updateScreen(sf::Vector2u windowSize, Hero &hero, std::vector<Segment> &seg
 
 void updateWalls(std::vector<Segment> &segments, sf::RenderWindow &window)
 {
-    if (isPrevSegmentEnded(segments, window))
-        initNextSegment(segments, window);
+    if (isPrevSegmentEnded(segments, getWindowSize(window)))
+        initNextSegment(segments, getWindowSize(window));
 }
 
 void updateCheckpoints(std::vector<Segment> &segments, Hero &hero)

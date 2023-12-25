@@ -9,7 +9,7 @@ struct Segment
     bool isCheckpointPassed = false;
 };
 
-void initSegments(std::vector<Segment> &segments, sf::RenderWindow &window)
+void initSegments(std::vector<Segment> &segments, sf::Vector2u windowSize)
 {
     const int countWallsLvl1 = 4;
     for (int i = 0; i < countWallsLvl1; i++)
@@ -24,7 +24,6 @@ void initSegments(std::vector<Segment> &segments, sf::RenderWindow &window)
     initWallsSegment(segments[0].walls, countWallsLvl1, wallsPositionLvl1, wallsTypesLvl1, wallsSizeLvl1, wallsFeatureLvl1);
 
     const int countWallsLvl2 = 4;
-    const sf::Vector2u windowSize = window.getSize();
     for (int i = 0; i < countWallsLvl2; i++)
         segments[1].walls.push_back(Wall());
     const float lvl2SegmentStart = wallsPositionLvl1[countWallsLvl1 - 1].y - 40 - windowSize.y;
@@ -66,7 +65,7 @@ std::vector<Wall> getAllWalls(std::vector<Segment> segments)
     return walls;
 }
 
-void initNextSegment(std::vector<Segment> &segments, sf::RenderWindow &window)
+void initNextSegment(std::vector<Segment> &segments, sf::Vector2u windowSize)
 {
     int activeSegmentIndex = 0;
     if (segments[1].isActive)
@@ -80,7 +79,6 @@ void initNextSegment(std::vector<Segment> &segments, sf::RenderWindow &window)
     for (int i = 0; i < countWalls; i++)
         segments[activeSegmentIndex].walls.push_back(Wall());
     const int prevSegmentLastWallIndex = (int)segments[1 - activeSegmentIndex].walls.size() - 1;
-    const sf::Vector2u windowSize = window.getSize();
     const float segmentStart = segments[1 - activeSegmentIndex].walls[prevSegmentLastWallIndex].position.y - 100 - windowSize.y;
     const std::vector<sf::Vector2f> wallsPosition = {{200, 400}, {635, 0}, {200, 10}, {200, -120}};
     const std::vector<std::string> wallsTypes = {"_wall", "_wall", "_wall", "_checkpoint_enabled"};
@@ -101,10 +99,9 @@ sf::Vector2f getCheckpointFromActiveSegment(std::vector<Segment> segments)
     return segments[activeSegmentIndex].walls[activeSegmentWallsCount - 1].position;
 }
 
-bool isPrevSegmentEnded(std::vector<Segment> segments, sf::RenderWindow &window)
+bool isPrevSegmentEnded(std::vector<Segment> segments, sf::Vector2u windowSize)
 {
     const sf::Vector2f prevCheckpointPosition = getCheckpointFromActiveSegment(segments);
-    const sf::Vector2u windowSize = window.getSize();
     return windowSize.y + 20 < prevCheckpointPosition.y;
 }
 

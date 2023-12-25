@@ -6,21 +6,23 @@
 #include "walls/wall.h"
 #include "hero/hero.h"
 #include "segment/segment.h"
+#include "game/game.h"
 
 sf::Vector2u getWindowSize(sf::RenderWindow &window)
 {
     return window.getSize();
 }
 
-void initStructures(Map &map, Ground &ground, Hero &hero, HeroTextures &heroTextures, std::vector<Segment> &segments, sf::RenderWindow &window)
+void initStructures(Game &game, Map &map, Ground &ground, Hero &hero, HeroTextures &heroTextures, std::vector<Segment> &segments, sf::RenderWindow &window)
 {
+    initGame(game);
     initMap(map);
     initGround(ground);
     initHero(hero, heroTextures);
     initSegments(segments, getWindowSize(window));
 }
 
-void pollEvents(sf::RenderWindow &window, Hero &hero, HeroTextures &heroTextures)
+void pollEvents(sf::RenderWindow &window, Game &game, Hero &hero, HeroTextures &heroTextures)
 {
     sf::Event event;
     while (window.pollEvent(event))
@@ -38,7 +40,7 @@ void pollEvents(sf::RenderWindow &window, Hero &hero, HeroTextures &heroTextures
                 break;
             }
             if (event.key.code == sf::Keyboard::Return)
-                restartGame(hero);
+                restartGame(game, hero);
             break;
         case sf::Event::KeyPressed:
             if (event.key.code == sf::Keyboard::Space)
@@ -114,7 +116,7 @@ int main()
     constexpr unsigned WINDOW_HEIGHT = 800;
 
     sf::Clock clock;
-    int score = 0;
+    Game game;
     Map map;
     Ground ground;
     Hero hero;
@@ -127,15 +129,15 @@ int main()
         sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}),
         "Wall Kicker", sf::Style::Default, settings);
 
-    initStructures(map, ground, hero, heroTextures, segments, window);
+    initStructures(game, map, ground, hero, heroTextures, segments, window);
 
     while (window.isOpen())
     {
         const float dt = clock.restart().asSeconds();
-        pollEvents(window, hero, heroTextures);
+        pollEvents(window, game, hero, heroTextures);
         update(hero, heroTextures, segments, window, ground, dt);
         redrawFrame(window, map, ground, hero, segments);
-        if (isGameRestarted(hero))
-            initStructures(map, ground, hero, heroTextures, segments, window);
+        if (isGameRestarted(game))
+            initStructures(game, map, ground, hero, heroTextures, segments, window);
     }
 }

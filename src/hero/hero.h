@@ -97,7 +97,7 @@ bool isHeroOnWall(Hero &hero)
 
 void updateHeroSprite(Hero &hero, HeroTextures &heroTextures)
 {
-    if (hero.jumpState == 1)
+    if (hero.jumpState == 1 || hero.jumpState == 3)
     {
         if (hero.speedY >= 0)
         {
@@ -108,7 +108,7 @@ void updateHeroSprite(Hero &hero, HeroTextures &heroTextures)
             hero.img.setTexture(heroTextures.fallTexture);
         }
     }
-    if (hero.jumpState == 2)
+    if (hero.jumpState == 2 || hero.jumpState == 4)
         hero.img.setTexture(heroTextures.fallTexture);
     if (isHeroOnWall(hero))
         hero.img.setTexture(heroTextures.hookTexture);
@@ -244,15 +244,4 @@ bool isHeroAlive(Hero hero)
 bool isHeroShouldDead(sf::Vector2u windowSize, Hero hero)
 {
     return hero.position.y + 100 > windowSize.y;
-}
-
-void restartGame(Hero &hero)
-{
-    if (!isHeroAlive(hero))
-        hero.isRestart = true;
-}
-
-bool isGameRestarted(Hero hero)
-{
-    return hero.isRestart;
 }

@@ -82,6 +82,11 @@ void initHero(Hero &hero, HeroTextures &heroTextures)
     hero.img.setPosition(hero.position);
 }
 
+bool isHeroOnWall(Hero &hero)
+{
+    return hero.jumpState == 5 || hero.jumpState == 6 || hero.jumpState == 8 || hero.jumpState == 9;
+}
+
 void updateHeroSprite(Hero &hero, HeroTextures &heroTextures)
 {
     if (hero.jumpState == 1)
@@ -97,7 +102,7 @@ void updateHeroSprite(Hero &hero, HeroTextures &heroTextures)
     }
     if (hero.jumpState == 2)
         hero.img.setTexture(heroTextures.fallTexture);
-    if (hero.jumpState == 5 || hero.jumpState == 6)
+    if (isHeroOnWall(hero))
         hero.img.setTexture(heroTextures.hookTexture);
 }
 
@@ -116,7 +121,7 @@ void updateHeroImgScale(Hero &hero)
     }
 }
 
-void updateHeroPosition(Hero &hero, HeroTextures &heroTextures, std::vector<Wall> walls, float dt)
+void updateHeroPosition(Hero &hero, HeroTextures &heroTextures, std::vector<Wall> wallsSegment1, std::vector<Wall> wallsSegment2, float dt)
 {
     const int gravity = 30;
     if (hero.jumpState == 1 || hero.jumpState == 3)
@@ -137,30 +142,39 @@ void updateHeroPosition(Hero &hero, HeroTextures &heroTextures, std::vector<Wall
             hero.position += {hero.speedX * dt, -hero.speedY * dt};
         hero.speedY -= gravity;
     }
-    if (hero.jumpState == 7)
-    {
-        hero.position += {0, hero.speedX * dt};
-    }
     if (hero.jumpState == 5 || hero.jumpState == 6)
     {
         hero.position += {0, 40 * dt};
     }
-    if (hero.jumpState != 0 && hero.jumpState != 5 && hero.jumpState != 6)
+    if (hero.jumpState == 7)
+    {
+        hero.position += {0, hero.speedX * dt};
+    }
+    if (!isHeroOnWall(hero))
     {
         const int heroWidth = 54;
         const int heroHeigth = 97;
         const int wallWidth = 20;
         const int oneWallHeigth = 80;
+        std::vector<Wall> walls(wallsSegment1);
+        walls.insert(walls.end(), wallsSegment2.begin(), wallsSegment2.end());
         const int wallsCount = (int)walls.size();
         for (int i = 0; i < wallsCount; i++)
         {
             if (hero.position.x >= walls[i].position.x && hero.position.x < walls[i].position.x + wallWidth &&
-                hero.position.y + heroHeigth >= walls[i].position.y && (hero.position.y < walls[i].position.y + (oneWallHeigth * walls[i].size)))
+                hero.position.y + heroHeigth * 3 / 4 >= walls[i].position.y && hero.position.y + heroHeigth * 1 / 4 < walls[i].position.y + oneWallHeigth * walls[i].size)
             {
                 if (hero.jumpState == 1 || hero.jumpState == 3)
                     hero.jumpState = 6;
                 if (hero.jumpState == 2 || hero.jumpState == 4)
                     hero.jumpState = 5;
+                if (i == (int)wallsSegment1.size() - 1 || i == (int)wallsSegment2.size() - 1)
+                {
+                    if (hero.jumpState == 6)
+                        hero.jumpState = 8;
+                    else
+                        hero.jumpState = 9;
+                }
                 if (hero.direction == 'l')
                     hero.direction = 'r';
                 else
@@ -179,7 +193,7 @@ void updateHeroPositionWithScreenMove(Hero &hero, int screenChangeSpeed, float d
 void updateJumpHeroState(Hero &hero)
 {
     const float startSpeedY = 500;
-    if (hero.jumpState == 0 || hero.jumpState == 5)
+    if (hero.jumpState == 0 || hero.jumpState == 5 || hero.jumpState == 9)
     {
         hero.jumpState = 1;
         hero.speedY = startSpeedY;
@@ -205,4 +219,6 @@ void stopHeroJump(Hero &hero)
         hero.jumpState = 4;
     if (hero.jumpState == 6)
         hero.jumpState = 5;
+    if (hero.jumpState == 8)
+        hero.jumpState = 9;
 }

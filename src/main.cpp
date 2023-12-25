@@ -74,10 +74,9 @@ void update(Hero &hero, HeroTextures &heroTextures, std::vector<Segment> &segmen
     const sf::Vector2u windowSize = window.getSize();
     if (hero.isAlive)
     {
-        std::vector<Wall> walls = getAllWalls(segments);
         updateScreen(windowSize, hero, segments, ground, dt);
         updateWalls(segments, window);
-        updateHeroPosition(hero, heroTextures, walls, dt);
+        updateHeroPosition(hero, heroTextures, segments[0].walls, segments[1].walls, dt);
         updateCheckpoints(segments, hero);
     }
     if (hero.position.y + 100 > windowSize.y)

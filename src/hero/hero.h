@@ -222,3 +222,18 @@ void stopHeroJump(Hero &hero)
     if (hero.jumpState == 8)
         hero.jumpState = 9;
 }
+
+void setHeroDead(Hero &hero)
+{
+    hero.isAlive = false;
+}
+
+bool isHeroAlive(Hero hero)
+{
+    return hero.isAlive;
+}
+
+bool isHeroDead(sf::Vector2u windowSize, Hero hero)
+{
+    return hero.position.y + 100 > windowSize.y;
+}

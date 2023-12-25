@@ -7,6 +7,11 @@
 #include "hero/hero.h"
 #include "segment/segment.h"
 
+sf::Vector2u getWindowSize(sf::RenderWindow &window)
+{
+    return window.getSize();
+}
+
 void initStructures(Map &map, Ground &ground, Hero &hero, HeroTextures &heroTextures, std::vector<Segment> &segments, sf::RenderWindow &window)
 {
     initMap(map);
@@ -71,17 +76,19 @@ void updateCheckpoints(std::vector<Segment> &segments, Hero &hero)
 
 void update(Hero &hero, HeroTextures &heroTextures, std::vector<Segment> &segments, sf::RenderWindow &window, Ground &ground, float dt)
 {
-    const sf::Vector2u windowSize = window.getSize();
-    if (hero.isAlive)
+    if (isHeroAlive(hero))
     {
-        updateScreen(windowSize, hero, segments, ground, dt);
+        updateScreen(getWindowSize(window), hero, segments, ground, dt);
         updateWalls(segments, window);
         updateHeroPosition(hero, heroTextures, segments[0].walls, segments[1].walls, dt);
         updateCheckpoints(segments, hero);
     }
-    if (hero.position.y + 100 > windowSize.y)
+    else
     {
-        hero.isAlive = false;
+    }
+    if (isHeroDead(getWindowSize(window), hero) && isHeroAlive(hero))
+    {
+        setHeroDead(hero);
     }
 }
 

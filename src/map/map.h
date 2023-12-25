@@ -3,6 +3,7 @@
 struct Map
 {
     sf::Texture texture;
+    sf::Texture gameOverTexture;
     sf::Sprite img;
 };
 
@@ -13,11 +14,15 @@ struct Ground
     sf::Vector2f position;
 };
 
-void initMapTexture(sf::Texture &texture)
+void initMapTexture(Map &map)
 {
-    if (!texture.loadFromFile("../images/map/background.png"))
+    if (!map.texture.loadFromFile("../images/map/background.png"))
     {
-        std::cout << "Fail to load image" << std::endl;
+        std::cout << "Fail to map image" << std::endl;
+    }
+    if (!map.gameOverTexture.loadFromFile("../images/map/game_over_screen.png"))
+    {
+        std::cout << "Fail to game over image" << std::endl;
     }
 }
 
@@ -25,13 +30,13 @@ void initGroundTexture(sf::Texture &texture)
 {
     if (!texture.loadFromFile("../images/map/ground.png"))
     {
-        std::cout << "Fail to load image" << std::endl;
+        std::cout << "Fail to ground image" << std::endl;
     }
 }
 
 void initMap(Map &map)
 {
-    initMapTexture(map.texture);
+    initMapTexture(map);
     map.img.setTexture(map.texture);
 }
 

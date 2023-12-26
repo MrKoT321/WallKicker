@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
+#include <sstream>
 #include <iostream>
 #include <vector>
 #include "map/map.h"
@@ -73,20 +74,23 @@ void updateWalls(std::vector<Segment> &segments, sf::RenderWindow &window)
         initNextSegment(segments, getWindowSize(window));
 }
 
-void updateCheckpoints(std::vector<Segment> &segments, Hero &hero)
+void updateCheckpoints(Game &game, std::vector<Segment> &segments, Hero &hero)
 {
     if (isCurrSegmentCompleted(segments, hero.position.y))
+    {
         updateSegmentWithLvlComplete(segments);
+        increaseGameScore(game);
+    }
 }
 
-void update(Hero &hero, HeroTextures &heroTextures, std::vector<Segment> &segments, sf::RenderWindow &window, Ground &ground, float dt)
+void update(Game &game, Hero &hero, HeroTextures &heroTextures, std::vector<Segment> &segments, sf::RenderWindow &window, Ground &ground, float dt)
 {
     if (isHeroAlive(hero))
     {
         updateHeroPosition(hero, heroTextures, segments[0].walls, segments[1].walls, dt);
         updateScreen(getWindowSize(window), hero, segments, ground, dt);
         updateWalls(segments, window);
-        updateCheckpoints(segments, hero);
+        updateCheckpoints(game, segments, hero);
     }
     if (isHeroShouldDead(getWindowSize(window), hero) && isHeroAlive(hero))
     {
@@ -100,7 +104,7 @@ void update(Hero &hero, HeroTextures &heroTextures, std::vector<Segment> &segmen
     }
 }
 
-void redrawFrame(sf::RenderWindow &window, Map map, Ground ground, Hero hero, std::vector<Segment> &segments)
+void redrawFrame(sf::RenderWindow &window, Game &game, Map map, Ground ground, Hero hero, std::vector<Segment> &segments)
 {
     window.clear();
     drawMap(window, map);
@@ -108,7 +112,14 @@ void redrawFrame(sf::RenderWindow &window, Map map, Ground ground, Hero hero, st
     drawGround(window, ground);
     drawHero(window, hero);
     if (!isHeroAlive(hero) && !isHeroExploded(hero))
+    {
         drawEndGameScreen(window, map);
+        drawScoreEndGame(window, game);
+    }
+    else
+    {
+        drawScore(window, game);
+    }
     window.display();
 }
 
@@ -137,8 +148,8 @@ int main()
     {
         const float dt = clock.restart().asSeconds();
         pollEvents(window, game, hero, heroTextures);
-        update(hero, heroTextures, segments, window, ground, dt);
-        redrawFrame(window, map, ground, hero, segments);
+        update(game, hero, heroTextures, segments, window, ground, dt);
+        redrawFrame(window, game, map, ground, hero, segments);
         if (isGameRestarted(game))
             initStructures(game, map, ground, hero, heroTextures, segments, window);
     }

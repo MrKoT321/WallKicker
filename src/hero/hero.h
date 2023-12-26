@@ -256,8 +256,9 @@ void updateHeroPosition(Hero &hero, HeroTextures &heroTextures, std::vector<Wall
                     hero.jumpState = 6;
                 if (hero.jumpState == 2 || hero.jumpState == 4)
                     hero.jumpState = 5;
-                if (i == (int)wallsSegment1.size() - 1 || i == (int)wallsSegment2.size() - 1)
+                if (i == (int)wallsSegment1.size() - 1 || i == (int)walls.size() - 1)
                 {
+                    std::cout << "checkpoint" << std::endl;
                     if (hero.jumpState == 6)
                         hero.jumpState = 8;
                     else

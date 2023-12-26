@@ -63,9 +63,9 @@ void initNextSegment(std::vector<Segment> &segments, sf::Vector2u windowSize)
     const int prevSegmentLastWallIndex = (int)segments[1 - activeSegmentIndex].walls.size() - 1;
     const float segmentStart = segments[1 - activeSegmentIndex].walls[prevSegmentLastWallIndex].position.y - 120 - windowSize.y;
     const std::vector<sf::Vector2f> wallsPosition = {{200, 400}, {635, 0}, {200, 10}, {200, -170}, {200, -370}};
-    const std::vector<std::string> wallsTypes = {getSimpleWallType(), getSimpleWallType(), getSimpleWallType(), getRightSpikeWallType(), getEnableCheckpointWallType()};
+    const std::vector<std::string> wallsTypes = {getSimpleWallType(), getSimpleWallType(), getSimpleWallType(), getLeftSpikeWallType(), getEnableCheckpointWallType()};
     const std::vector<int> wallsSize = {5, 10, 3, 1, 1};
-    const std::vector<char> wallsFeature = {getSimpleWallFeature(), getSimpleWallFeature(), getSimpleWallFeature(), getRightSpikeWallFeature(), getCheckpointWallFeature()};
+    const std::vector<char> wallsFeature = {getSimpleWallFeature(), getSimpleWallFeature(), getSimpleWallFeature(), getLeftSpikeWallFeature(), getCheckpointWallFeature()};
     segments[activeSegmentIndex].isCheckpointPassed = false;
     initWallsSegment(segments[activeSegmentIndex].walls, countWalls, wallsPosition, wallsTypes, wallsSize, wallsFeature, segmentStart);
 }

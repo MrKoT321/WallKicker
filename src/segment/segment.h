@@ -47,11 +47,14 @@ void drawWalls(sf::RenderWindow &window, std::vector<Segment> &segments)
     }
 }
 
+int getActiveSegmentIndex(std::vector<Segment> segments)
+{
+    return segments[1].isActive ? 1 : 0;
+}
+
 void initNextSegment(std::vector<Segment> &segments, sf::Vector2u windowSize)
 {
-    int activeSegmentIndex = 0;
-    if (segments[1].isActive)
-        activeSegmentIndex = 1;
+    int activeSegmentIndex = getActiveSegmentIndex(segments);
 
     segments[activeSegmentIndex].isActive = false;
     segments[1 - activeSegmentIndex].isActive = true;
@@ -63,33 +66,29 @@ void initNextSegment(std::vector<Segment> &segments, sf::Vector2u windowSize)
     const int prevSegmentLastWallIndex = (int)segments[1 - activeSegmentIndex].walls.size() - 1;
     const float segmentStart = segments[1 - activeSegmentIndex].walls[prevSegmentLastWallIndex].position.y - 120 - windowSize.y;
     const std::vector<sf::Vector2f> wallsPosition = {{200, 400}, {635, 0}, {200, 10}, {200, -170}, {200, -370}};
-    const std::vector<std::string> wallsTypes = {getSimpleWallType(), getSimpleWallType(), getSimpleWallType(), getLeftSpikeWallType(), getEnableCheckpointWallType()};
+    const std::vector<std::string> wallsTypes = {getSimpleWallType(), getSimpleWallType(), getSimpleWallType(), getBounceWallType(), getEnableCheckpointWallType()};
     const std::vector<int> wallsSize = {5, 10, 3, 1, 1};
-    const std::vector<char> wallsFeature = {getSimpleWallFeature(), getSimpleWallFeature(), getSimpleWallFeature(), getLeftSpikeWallFeature(), getCheckpointWallFeature()};
+    const std::vector<char> wallsFeature = {getSimpleWallFeature(), getSimpleWallFeature(), getSimpleWallFeature(), getBounceWallFeature(), getCheckpointWallFeature()};
     segments[activeSegmentIndex].isCheckpointPassed = false;
     initWallsSegment(segments[activeSegmentIndex].walls, countWalls, wallsPosition, wallsTypes, wallsSize, wallsFeature, segmentStart);
 }
 
-sf::Vector2f getCheckpointFromActiveSegment(std::vector<Segment> segments)
+sf::Vector2f getCheckpointFromActiveSegment(std::vector<Segment> &segments)
 {
-    int activeSegmentIndex = 0;
-    if (segments[1].isActive)
-        activeSegmentIndex = 1;
+    int activeSegmentIndex = getActiveSegmentIndex(segments);
     const int activeSegmentWallsCount = (int)segments[activeSegmentIndex].walls.size();
     return segments[activeSegmentIndex].walls[activeSegmentWallsCount - 1].position;
 }
 
-bool isPrevSegmentEnded(std::vector<Segment> segments, sf::Vector2u windowSize)
+bool isPrevSegmentEnded(std::vector<Segment> &segments, sf::Vector2u windowSize)
 {
     const sf::Vector2f prevCheckpointPosition = getCheckpointFromActiveSegment(segments);
     return windowSize.y + 20 < prevCheckpointPosition.y;
 }
 
-bool isCurrSegmentCompleted(std::vector<Segment> segments, float heroPositionY)
+bool isCurrSegmentCompleted(std::vector<Segment> &segments, float heroPositionY)
 {
-    int activeSegmentIndex = 0;
-    if (segments[1].isActive)
-        activeSegmentIndex = 1;
+    int activeSegmentIndex = getActiveSegmentIndex(segments);
     if (segments[activeSegmentIndex].isCheckpointPassed)
         return false;
     const int activeSegmentWallsCount = (int)segments[activeSegmentIndex].walls.size();
@@ -112,9 +111,7 @@ void updateSegmentPositionWithScreenMove(std::vector<Segment> &segments, int scr
 
 void updateSegmentWithLvlComplete(std::vector<Segment> &segments)
 {
-    int activeSegmentIndex = 0;
-    if (segments[1].isActive)
-        activeSegmentIndex = 1;
+    int activeSegmentIndex = getActiveSegmentIndex(segments);
     const int activeSegmentWallsCount = (int)segments[activeSegmentIndex].walls.size();
     updateCheckpointImgWithLvlComplete(segments[activeSegmentIndex].walls[activeSegmentWallsCount - 1]);
     segments[activeSegmentIndex].isCheckpointPassed = true;

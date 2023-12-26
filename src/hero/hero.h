@@ -168,7 +168,7 @@ void heroExplode(sf::RenderWindow &window, Hero &hero, HeroTextures &heroTexture
 
 void updateHeroSprite(Hero &hero, HeroTextures &heroTextures)
 {
-    if (hero.jumpState == 1 || hero.jumpState == 3)
+    if (hero.jumpState == 1 || hero.jumpState == 3 || hero.jumpState == 10)
     {
         if (hero.speedY >= 0)
         {
@@ -202,16 +202,22 @@ void updateHeroImgScale(Hero &hero)
     }
 }
 
-void updateHeroPosition(Hero &hero, HeroTextures &heroTextures, std::vector<Wall> wallsSegment1, std::vector<Wall> wallsSegment2, float dt)
+void heroStartJump(Hero &hero)
 {
-    const int gravity = 30;
-    if (hero.jumpState == 1 || hero.jumpState == 3)
+    const float startSpeedY = 450;
+    hero.speedY = startSpeedY;
+}
+
+float updateHeroPosition(Hero &hero, HeroTextures &heroTextures, std::vector<Wall> wallsSegment1, std::vector<Wall> wallsSegment2, float dt)
+{
+    const int gravity = 700;
+    if (hero.jumpState == 1 || hero.jumpState == 3 || hero.jumpState == 10)
     {
         if (hero.direction == 'l')
             hero.position += {-hero.speedX * dt, -hero.speedY * dt};
         else
             hero.position += {hero.speedX * dt, -hero.speedY * dt};
-        hero.speedY -= gravity;
+        hero.speedY -= gravity * dt;
     }
     if (hero.jumpState == 2 || hero.jumpState == 4)
     {
@@ -221,7 +227,7 @@ void updateHeroPosition(Hero &hero, HeroTextures &heroTextures, std::vector<Wall
             hero.position += {-hero.speedX * dt, -hero.speedY * dt};
         else
             hero.position += {hero.speedX * dt, -hero.speedY * dt};
-        hero.speedY -= gravity;
+        hero.speedY -= gravity * dt;
     }
     if (hero.jumpState == 5 || hero.jumpState == 6)
     {
@@ -246,12 +252,12 @@ void updateHeroPosition(Hero &hero, HeroTextures &heroTextures, std::vector<Wall
             if (hero.position.x >= walls[i].position.x && hero.position.x < walls[i].position.x + wallWidth &&
                 hero.position.y + heroHeigth * 3 / 4 >= walls[i].position.y && hero.position.y + heroHeigth * 1 / 4 < walls[i].position.y + oneWallHeigth * walls[i].size)
             {
-                if (isHeroOnSpike(walls[i], hero.direction))
+                if (isHeroOnSpikeWall(walls[i], hero.direction))
                 {
                     setHeroAlive(hero, false);
                     setHeroExploded(hero, true);
                     normolizeHeroExplodePosition(hero);
-                    return;
+                    return 0;
                 }
                 if (hero.jumpState == 1 || hero.jumpState == 3)
                     hero.jumpState = 6;
@@ -268,10 +274,18 @@ void updateHeroPosition(Hero &hero, HeroTextures &heroTextures, std::vector<Wall
                     hero.direction = 'r';
                 else
                     hero.direction = 'l';
+                if (isHeroOnBounceWall(walls[i]))
+                {
+                    hero.jumpState = 10;
+                    heroStartJump(hero);
+                    updateHeroImgScale(hero);
+                    return 0;
+                }
                 updateHeroSprite(hero, heroTextures);
             }
         }
     }
+    return hero.speedY;
 }
 
 void updateHeroPositionWithScreenMove(Hero &hero, int screenChangeSpeed, float dt)
@@ -281,16 +295,15 @@ void updateHeroPositionWithScreenMove(Hero &hero, int screenChangeSpeed, float d
 
 void updateJumpHeroState(Hero &hero)
 {
-    const float startSpeedY = 500;
     if (hero.jumpState == 0 || hero.jumpState == 5 || hero.jumpState == 9)
     {
         hero.jumpState = 1;
-        hero.speedY = startSpeedY;
+        heroStartJump(hero);
         updateHeroImgScale(hero);
     }
-    if (hero.jumpState == 2)
+    if (hero.jumpState == 2 || hero.jumpState == 10)
     {
-        hero.speedY = startSpeedY;
+        heroStartJump(hero);
         hero.jumpState = 3;
         if (hero.direction == 'l')
             hero.direction = 'r';

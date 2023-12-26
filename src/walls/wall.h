@@ -34,6 +34,11 @@ std::string getBothSpikeWallType()
     return "_spike_both";
 }
 
+std::string getBounceWallType()
+{
+    return "_bounce";
+}
+
 char getSimpleWallFeature()
 {
     return 's';
@@ -57,6 +62,11 @@ char getRightSpikeWallFeature()
 char getBothSpikeWallFeature()
 {
     return 'b';
+}
+
+char getBounceWallFeature()
+{
+    return 'j';
 }
 
 void initWallsSegment(std::vector<Wall> &walls, int countWalls, std::vector<sf::Vector2f> wallsPositions, std::vector<std::string> wallsTypes, std::vector<int> wallsSize, std::vector<char> wallsFeature, float segmentStart = 0)
@@ -87,9 +97,9 @@ void updateCheckpointImgWithLvlComplete(Wall &wall)
     wall.img.setTexture(wall.texture);
 }
 
-bool isHeroOnSpike(Wall wall, char heroDirection)
+bool isHeroOnSpikeWall(Wall wall, char heroDirection)
 {
-    if (wall.feature == getSimpleWallFeature() || wall.feature == getCheckpointWallFeature())
+    if (wall.feature == getSimpleWallFeature() || wall.feature == getCheckpointWallFeature() || wall.feature == getBounceWallFeature())
         return false;
     if (wall.feature == getBothSpikeWallFeature())
         return true;
@@ -100,7 +110,12 @@ bool isHeroOnSpike(Wall wall, char heroDirection)
     return false;
 }
 
-int getWallWidth(Wall wall)
+bool isHeroOnBounceWall(Wall &wall)
+{
+    return wall.feature == getBounceWallFeature();
+}
+
+int getWallWidth(Wall &wall)
 {
     if (wall.feature == getLeftSpikeWallFeature() || wall.feature == getRightSpikeWallFeature())
         return 40;

@@ -56,12 +56,12 @@ void pollEvents(sf::RenderWindow &window, Game &game, Hero &hero, HeroTextures &
     }
 }
 
-void updateScreen(sf::Vector2u windowSize, Hero &hero, std::vector<Segment> &segments, Ground &ground, float dt)
+void updateScreen(sf::Vector2u windowSize, Hero &hero, std::vector<Segment> &segments, Ground &ground, float heroVerticalSpeed, float dt)
 {
     const float positionToChangeScreen = windowSize.y * 0.4;
     if (hero.position.y < positionToChangeScreen)
     {
-        const int screenChangeSpeed = 200;
+        const int screenChangeSpeed = heroVerticalSpeed - 100 >= 100 ? heroVerticalSpeed - 100 : 100;
         updateHeroPositionWithScreenMove(hero, screenChangeSpeed, dt);
         updateGroundPositionWithScreenMove(ground, screenChangeSpeed, dt);
         updateSegmentPositionWithScreenMove(segments, screenChangeSpeed, dt);
@@ -70,8 +70,9 @@ void updateScreen(sf::Vector2u windowSize, Hero &hero, std::vector<Segment> &seg
 
 void updateWalls(std::vector<Segment> &segments, sf::RenderWindow &window)
 {
-    if (isPrevSegmentEnded(segments, getWindowSize(window)))
-        initNextSegment(segments, getWindowSize(window));
+    const sf::Vector2u windowSize = getWindowSize(window);
+    if (isPrevSegmentEnded(segments, windowSize))
+        initNextSegment(segments, windowSize);
 }
 
 void updateCheckpoints(Game &game, std::vector<Segment> &segments, Hero &hero)
@@ -85,14 +86,15 @@ void updateCheckpoints(Game &game, std::vector<Segment> &segments, Hero &hero)
 
 void update(Game &game, Hero &hero, HeroTextures &heroTextures, std::vector<Segment> &segments, sf::RenderWindow &window, Ground &ground, float dt)
 {
+    const sf::Vector2u windowSize = getWindowSize(window);
     if (isHeroAlive(hero))
     {
-        updateHeroPosition(hero, heroTextures, segments[0].walls, segments[1].walls, dt);
-        updateScreen(getWindowSize(window), hero, segments, ground, dt);
+        float heroVerticalSpeed = updateHeroPosition(hero, heroTextures, segments[0].walls, segments[1].walls, dt);
+        updateScreen(windowSize, hero, segments, ground, heroVerticalSpeed, dt);
         updateWalls(segments, window);
         updateCheckpoints(game, segments, hero);
     }
-    if (isHeroShouldDead(getWindowSize(window), hero) && isHeroAlive(hero))
+    if (isHeroShouldDead(windowSize, hero) && isHeroAlive(hero))
     {
         setHeroAlive(hero, false);
         setHeroExploded(hero, true);

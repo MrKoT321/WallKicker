@@ -235,13 +235,14 @@ void updateHeroPosition(Hero &hero, HeroTextures &heroTextures, std::vector<Wall
     {
         const int heroWidth = 54;
         const int heroHeigth = 97;
-        const int wallWidth = 20;
         const int oneWallHeigth = 80;
+        int wallWidth;
         std::vector<Wall> walls(wallsSegment1);
         walls.insert(walls.end(), wallsSegment2.begin(), wallsSegment2.end());
         const int wallsCount = (int)walls.size();
         for (int i = 0; i < wallsCount; i++)
         {
+            wallWidth = getWallWidth(walls[i]);
             if (hero.position.x >= walls[i].position.x && hero.position.x < walls[i].position.x + wallWidth &&
                 hero.position.y + heroHeigth * 3 / 4 >= walls[i].position.y && hero.position.y + heroHeigth * 1 / 4 < walls[i].position.y + oneWallHeigth * walls[i].size)
             {
@@ -258,7 +259,6 @@ void updateHeroPosition(Hero &hero, HeroTextures &heroTextures, std::vector<Wall
                     hero.jumpState = 5;
                 if (i == (int)wallsSegment1.size() - 1 || i == (int)walls.size() - 1)
                 {
-                    std::cout << "checkpoint" << std::endl;
                     if (hero.jumpState == 6)
                         hero.jumpState = 8;
                     else

@@ -2,8 +2,6 @@
 
 struct Segment
 {
-    char startCheckpointDir;
-    char endCheckpointDir;
     std::vector<Wall> walls;
     bool isActive = false;
     bool isCheckpointPassed = false;
@@ -18,11 +16,9 @@ void initSegments(std::vector<Segment> &segments, sf::Vector2u windowSize)
     for (int i = 0; i < countWallsLvl1; i++)
         segments[0].walls.push_back(Wall());
     const std::vector<sf::Vector2f> wallsPositionLvl1 = {{345, 400}, {635, 0}, {200, 10}, {200, -170}};
-    const std::vector<std::string> wallsTypesLvl1 = {"_wall", "_wall", "_wall", "_checkpoint_enabled"};
+    const std::vector<std::string> wallsTypesLvl1 = {getSimpleWallType(), getSimpleWallType(), getSimpleWallType(), getEnableCheckpointWallType()};
     const std::vector<int> wallsSizeLvl1 = {5, 10, 3, 1};
-    const std::vector<char> wallsFeatureLvl1 = {'s', 's', 's', 'c'};
-    segments[0].startCheckpointDir = 'l';
-    segments[0].endCheckpointDir = 'r';
+    const std::vector<char> wallsFeatureLvl1 = {getSimpleWallFeature(), getSimpleWallFeature(), getSimpleWallFeature(), getCheckpointWallFeature()};
     segments[0].isActive = true;
     initWallsSegment(segments[0].walls, countWallsLvl1, wallsPositionLvl1, wallsTypesLvl1, wallsSizeLvl1, wallsFeatureLvl1);
 
@@ -31,11 +27,9 @@ void initSegments(std::vector<Segment> &segments, sf::Vector2u windowSize)
         segments[1].walls.push_back(Wall());
     const float lvl2SegmentStart = wallsPositionLvl1[countWallsLvl1 - 1].y - 120 - windowSize.y;
     const std::vector<sf::Vector2f> wallsPositionLvl2 = {{200, 400}, {635, 0}, {200, 10}, {200, -170}};
-    const std::vector<std::string> wallsTypesLvl2 = {"_wall", "_wall", "_wall", "_checkpoint_enabled"};
+    const std::vector<std::string> wallsTypesLvl2 = {getSimpleWallType(), getSimpleWallType(), getSimpleWallType(), getEnableCheckpointWallType()};
     const std::vector<int> wallsSizeLvl2 = {5, 10, 3, 1};
-    const std::vector<char> wallsFeatureLvl2 = {'s', 's', 's', 'c'};
-    segments[1].startCheckpointDir = 'l';
-    segments[1].endCheckpointDir = 'r';
+    const std::vector<char> wallsFeatureLvl2 = {getSimpleWallFeature(), getSimpleWallFeature(), getSimpleWallFeature(), getCheckpointWallFeature()};
     initWallsSegment(segments[1].walls, countWallsLvl2, wallsPositionLvl2, wallsTypesLvl2, wallsSizeLvl2, wallsFeatureLvl2, lvl2SegmentStart);
 }
 
@@ -62,18 +56,16 @@ void initNextSegment(std::vector<Segment> &segments, sf::Vector2u windowSize)
     segments[activeSegmentIndex].isActive = false;
     segments[1 - activeSegmentIndex].isActive = true;
 
-    const int countWalls = 4;
+    const int countWalls = 5;
     segments[activeSegmentIndex].walls.clear();
     for (int i = 0; i < countWalls; i++)
         segments[activeSegmentIndex].walls.push_back(Wall());
     const int prevSegmentLastWallIndex = (int)segments[1 - activeSegmentIndex].walls.size() - 1;
     const float segmentStart = segments[1 - activeSegmentIndex].walls[prevSegmentLastWallIndex].position.y - 120 - windowSize.y;
-    const std::vector<sf::Vector2f> wallsPosition = {{200, 400}, {635, 0}, {200, 10}, {200, -170}};
-    const std::vector<std::string> wallsTypes = {"_wall", "_wall", "_wall", "_checkpoint_enabled"};
-    const std::vector<int> wallsSize = {5, 10, 3, 1};
-    const std::vector<char> wallsFeature = {'s', 's', 's', 'c'};
-    segments[activeSegmentIndex].startCheckpointDir = 'l';
-    segments[activeSegmentIndex].endCheckpointDir = 'r';
+    const std::vector<sf::Vector2f> wallsPosition = {{200, 400}, {635, 0}, {200, 10}, {200, -170}, {200, -370}};
+    const std::vector<std::string> wallsTypes = {getSimpleWallType(), getSimpleWallType(), getSimpleWallType(), getRightSpikeWallType(), getEnableCheckpointWallType()};
+    const std::vector<int> wallsSize = {5, 10, 3, 1, 1};
+    const std::vector<char> wallsFeature = {getSimpleWallFeature(), getSimpleWallFeature(), getSimpleWallFeature(), getRightSpikeWallFeature(), getCheckpointWallFeature()};
     segments[activeSegmentIndex].isCheckpointPassed = false;
     initWallsSegment(segments[activeSegmentIndex].walls, countWalls, wallsPosition, wallsTypes, wallsSize, wallsFeature, segmentStart);
 }

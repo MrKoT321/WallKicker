@@ -36,3 +36,66 @@ void updateCheckpointImgWithLvlComplete(Wall &wall)
     }
     wall.img.setTexture(wall.texture);
 }
+
+bool isHeroOnSpike(Wall wall, char heroDirection)
+{
+    if (wall.feature == 's' || wall.feature == 'c')
+        return false;
+    if (wall.feature == 'b')
+        return true;
+    if (wall.feature == 'l' && heroDirection == 'r')
+        return true;
+    if (wall.feature == 'r' && heroDirection == 'l')
+        return true;
+    return false;
+}
+
+std::string getSimpleWallType()
+{
+    return "_wall";
+}
+
+std::string getEnableCheckpointWallType()
+{
+    return "_checkpoint_enabled";
+}
+
+std::string getLeftSpikeWallType()
+{
+    return "_spike_left";
+}
+
+std::string getRightSpikeWallType()
+{
+    return "_spike_right";
+}
+
+std::string getBothSpikeWallType()
+{
+    return "_spike_both";
+}
+
+char getSimpleWallFeature()
+{
+    return 's';
+}
+
+char getCheckpointWallFeature()
+{
+    return 'c';
+}
+
+char getLeftSpikeWallFeature()
+{
+    return 'l';
+}
+
+char getRightSpikeWallFeature()
+{
+    return 'r';
+}
+
+char getBothSpikeWallFeature()
+{
+    return 'b';
+}

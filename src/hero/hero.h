@@ -131,6 +131,27 @@ void drawHero(sf::RenderWindow &window, Hero &hero)
     }
 }
 
+void normolizeHeroExplodePosition(Hero &hero)
+{
+    const int collerateDeltaX = 25;
+    const int collerateDeltaY = 10;
+    if (hero.direction == 'l')
+    {
+        if (isHeroOnWall(hero))
+            hero.position.x += collerateDeltaX;
+        else
+            hero.position.x -= collerateDeltaX;
+    }
+    else
+    {
+        if (isHeroOnWall(hero))
+            hero.position.x -= collerateDeltaX;
+        else
+            hero.position.x += collerateDeltaX;
+    }
+    hero.position.y -= collerateDeltaY;
+}
+
 void heroExplode(sf::RenderWindow &window, Hero &hero, HeroTextures &heroTextures, float dt)
 {
     heroTextures.spriteTime += dt;
@@ -224,6 +245,13 @@ void updateHeroPosition(Hero &hero, HeroTextures &heroTextures, std::vector<Wall
             if (hero.position.x >= walls[i].position.x && hero.position.x < walls[i].position.x + wallWidth &&
                 hero.position.y + heroHeigth * 3 / 4 >= walls[i].position.y && hero.position.y + heroHeigth * 1 / 4 < walls[i].position.y + oneWallHeigth * walls[i].size)
             {
+                if (isHeroOnSpike(walls[i], hero.direction))
+                {
+                    setHeroAlive(hero, false);
+                    setHeroExploded(hero, true);
+                    normolizeHeroExplodePosition(hero);
+                    return;
+                }
                 if (hero.jumpState == 1 || hero.jumpState == 3)
                     hero.jumpState = 6;
                 if (hero.jumpState == 2 || hero.jumpState == 4)
@@ -281,25 +309,4 @@ void stopHeroJump(Hero &hero)
         hero.jumpState = 5;
     if (hero.jumpState == 8)
         hero.jumpState = 9;
-}
-
-void normolizeHeroExplodePosition(Hero &hero)
-{
-    const int collerateDeltaX = 25;
-    const int collerateDeltaY = 10;
-    if (hero.direction == 'l')
-    {
-        if (isHeroOnWall(hero))
-            hero.position.x += collerateDeltaX;
-        else
-            hero.position.x -= collerateDeltaX;
-    }
-    else
-    {
-        if (isHeroOnWall(hero))
-            hero.position.x -= collerateDeltaX;
-        else
-            hero.position.x += collerateDeltaX;
-    }
-    hero.position.y -= collerateDeltaY;
 }

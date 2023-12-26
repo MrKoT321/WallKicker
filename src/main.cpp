@@ -33,7 +33,7 @@ void pollEvents(sf::RenderWindow &window, Game &game, Hero &hero, HeroTextures &
             window.close();
             break;
         case sf::Event::KeyReleased:
-            if (event.key.code == sf::Keyboard::Space)
+            if (event.key.code == sf::Keyboard::Space && isHeroAlive(hero))
             {
                 stopHeroJump(hero);
                 updateHeroSprite(hero, heroTextures);
@@ -43,7 +43,7 @@ void pollEvents(sf::RenderWindow &window, Game &game, Hero &hero, HeroTextures &
                 restartGame(game, hero);
             break;
         case sf::Event::KeyPressed:
-            if (event.key.code == sf::Keyboard::Space)
+            if (event.key.code == sf::Keyboard::Space && isHeroAlive(hero))
             {
                 updateJumpHeroState(hero);
                 updateHeroSprite(hero, heroTextures);
@@ -88,13 +88,15 @@ void update(Hero &hero, HeroTextures &heroTextures, std::vector<Segment> &segmen
         updateWalls(segments, window);
         updateCheckpoints(segments, hero);
     }
-    else
-    {
-        // hero dead
-    }
     if (isHeroShouldDead(getWindowSize(window), hero) && isHeroAlive(hero))
     {
-        setHeroDead(hero);
+        setHeroAlive(hero, false);
+        setHeroExploded(hero, true);
+        normolizeHeroExplodePosition(hero);
+    }
+    if (isHeroExploded(hero))
+    {
+        heroExplode(window, hero, heroTextures, dt);
     }
 }
 
@@ -105,7 +107,7 @@ void redrawFrame(sf::RenderWindow &window, Map map, Ground ground, Hero hero, st
     drawWalls(window, segments);
     drawGround(window, ground);
     drawHero(window, hero);
-    if (!isHeroAlive(hero))
+    if (!isHeroAlive(hero) && !isHeroExploded(hero))
         drawEndGameScreen(window, map);
     window.display();
 }

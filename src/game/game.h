@@ -14,7 +14,7 @@ void initGame(Game &game)
 
 void restartGame(Game &game, Hero hero)
 {
-    if (!isHeroAlive(hero))
+    if (!isHeroAlive(hero) && !isHeroExploded(hero))
         game.isRestart = true;
 }
 

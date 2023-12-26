@@ -5,15 +5,17 @@ struct Hero
     int jumpState;
     char direction;
     bool isAlive;
-    bool isRestart;
+    bool isExploded;
     float speedX = 300;
     float speedY = 500;
     sf::Vector2f position;
     sf::Sprite img;
+    sf::Sprite explodeImg;
 };
 
 struct HeroTextures
 {
+    float spriteTime;
     sf::Texture standTexture;
     sf::Texture jumpTexture;
     sf::Texture fallTexture;
@@ -23,17 +25,42 @@ struct HeroTextures
     sf::Texture flipTexture2;
     sf::Texture flipTexture3;
     sf::Texture hookTexture;
+    sf::Texture explodeTexture;
 };
 
-struct HeroExplodeSprite
+bool isHeroOnWall(Hero &hero)
 {
-    sf::Texture explodeTexture1;
-    sf::Texture explodeTexture2;
-    sf::Texture explodeTexture3;
-};
+    return hero.jumpState == 5 || hero.jumpState == 6 || hero.jumpState == 8 || hero.jumpState == 9;
+}
+
+bool isHeroAlive(Hero hero)
+{
+    return hero.isAlive;
+}
+
+bool isHeroExploded(Hero hero)
+{
+    return hero.isExploded;
+}
+
+bool isHeroShouldDead(sf::Vector2u windowSize, Hero hero)
+{
+    return hero.position.y + 80 > windowSize.y;
+}
+
+void setHeroAlive(Hero &hero, bool state)
+{
+    hero.isAlive = state;
+}
+
+void setHeroExploded(Hero &hero, bool state)
+{
+    hero.isExploded = state;
+}
 
 void initHeroTexture(HeroTextures &heroTextures)
 {
+    heroTextures.spriteTime = 0;
     if (!heroTextures.standTexture.loadFromFile("../images/hero/hero_stand.png"))
     {
         std::cout << "Fail to load stand image" << std::endl;
@@ -70,29 +97,52 @@ void initHeroTexture(HeroTextures &heroTextures)
     {
         std::cout << "Fail to load hook image" << std::endl;
     }
+    if (!heroTextures.explodeTexture.loadFromFile("../images/hero/hero_explode_sprites.png"))
+    {
+        std::cout << "Fail to load explode image" << std::endl;
+    }
 }
 
 void initHero(Hero &hero, HeroTextures &heroTextures)
 {
     hero.jumpState = 0;
     hero.direction = 'l';
-    hero.isRestart = false;
+    hero.isExploded = false;
     hero.isAlive = true;
     hero.position = {473, 633};
     initHeroTexture(heroTextures);
     hero.img.setTexture(heroTextures.standTexture);
     hero.img.setPosition(hero.position);
+    hero.img.setScale(1, 1);
+    hero.explodeImg.setTexture(heroTextures.explodeTexture);
 }
 
 void drawHero(sf::RenderWindow &window, Hero &hero)
 {
-    hero.img.setPosition(hero.position);
-    window.draw(hero.img);
+    if (isHeroAlive(hero))
+    {
+        hero.img.setPosition(hero.position);
+        window.draw(hero.img);
+    }
+    if (isHeroExploded(hero))
+    {
+        hero.explodeImg.setPosition(hero.position);
+        window.draw(hero.explodeImg);
+    }
 }
 
-bool isHeroOnWall(Hero &hero)
+void heroExplode(sf::RenderWindow &window, Hero &hero, HeroTextures &heroTextures, float dt)
 {
-    return hero.jumpState == 5 || hero.jumpState == 6 || hero.jumpState == 8 || hero.jumpState == 9;
+    heroTextures.spriteTime += dt;
+    const float spriteTimeDuration = 1;
+    const int spitesCount = 28;
+    const int spritesInRow = 8;
+    const int currSpriteIndex = std::floor(spitesCount / spriteTimeDuration * heroTextures.spriteTime);
+    const int explodeSize = 100;
+    const sf::Vector2u spritePosition = {(unsigned int)currSpriteIndex % spritesInRow, (unsigned int)currSpriteIndex / spritesInRow};
+    hero.explodeImg.setTextureRect(sf::IntRect(spritePosition.x * explodeSize, spritePosition.y * explodeSize, explodeSize, explodeSize));
+    if (currSpriteIndex > spitesCount)
+        setHeroExploded(hero, false);
 }
 
 void updateHeroSprite(Hero &hero, HeroTextures &heroTextures)
@@ -120,11 +170,13 @@ void updateHeroImgScale(Hero &hero)
     if (hero.direction == 'r')
     {
         hero.img.setScale(-1, 1);
+        hero.explodeImg.setScale(-1, 1);
         hero.position.x += heroWidth;
     }
     else
     {
         hero.img.setScale(1, 1);
+        hero.explodeImg.setScale(1, 1);
         hero.position.x -= heroWidth;
     }
 }
@@ -231,17 +283,23 @@ void stopHeroJump(Hero &hero)
         hero.jumpState = 9;
 }
 
-void setHeroDead(Hero &hero)
+void normolizeHeroExplodePosition(Hero &hero)
 {
-    hero.isAlive = false;
-}
-
-bool isHeroAlive(Hero hero)
-{
-    return hero.isAlive;
-}
-
-bool isHeroShouldDead(sf::Vector2u windowSize, Hero hero)
-{
-    return hero.position.y + 100 > windowSize.y;
+    const int collerateDeltaX = 25;
+    const int collerateDeltaY = 10;
+    if (hero.direction == 'l')
+    {
+        if (isHeroOnWall(hero))
+            hero.position.x += collerateDeltaX;
+        else
+            hero.position.x -= collerateDeltaX;
+    }
+    else
+    {
+        if (isHeroOnWall(hero))
+            hero.position.x -= collerateDeltaX;
+        else
+            hero.position.x += collerateDeltaX;
+    }
+    hero.position.y -= collerateDeltaY;
 }

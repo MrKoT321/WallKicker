@@ -101,6 +101,11 @@ bool isHeroExploded(Hero &hero)
     return hero.isExploded;
 }
 
+bool isHeroMovedLeft(Hero &hero)
+{
+    return hero.direction == heroDirectionLeft();
+}
+
 bool isHeroShouldDead(sf::Vector2u windowSize, Hero &hero)
 {
     /* To see explode */
@@ -289,7 +294,7 @@ float updateHeroPosition(Hero &hero, HeroTextures &heroTextures, std::vector<Wal
         {
             if (isHeroTouchesWall(hero.position, getWallPosition(walls[i]), getWallWidth(walls[i]), getWallSize(walls[i])))
             {
-                if (isHeroOnSpikeWall(walls[i], hero.direction))
+                if (isHeroOnSpikeWall(walls[i], isHeroMovedLeft(hero)))
                 {
                     setHeroAlive(hero, false);
                     setHeroExploded(hero, true);

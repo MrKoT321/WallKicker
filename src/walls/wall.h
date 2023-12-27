@@ -97,15 +97,15 @@ void updateCheckpointImgWithLvlComplete(Wall &wall)
     wall.img.setTexture(wall.texture);
 }
 
-bool isHeroOnSpikeWall(Wall &wall, char heroDirection)
+bool isHeroOnSpikeWall(Wall &wall, bool isHeroDirectionLeft)
 {
     if (wall.feature == getSimpleWallFeature() || wall.feature == getCheckpointWallFeature() || wall.feature == getBounceWallFeature())
         return false;
     if (wall.feature == getBothSpikeWallFeature())
         return true;
-    if (wall.feature == getLeftSpikeWallFeature() && heroDirection == 'r')
+    if (wall.feature == getLeftSpikeWallFeature() && !isHeroDirectionLeft)
         return true;
-    if (wall.feature == getRightSpikeWallFeature() && heroDirection == 'l')
+    if (wall.feature == getRightSpikeWallFeature() && isHeroDirectionLeft)
         return true;
     return false;
 }

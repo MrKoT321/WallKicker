@@ -299,7 +299,6 @@ float updateHeroPosition(Hero &hero, HeroTextures &heroTextures, std::vector<Wal
                     setHeroAlive(hero, false);
                     setHeroExploded(hero, true);
                     normolizeHeroExplodePosition(hero);
-                    return 0;
                 }
                 if (hero.jumpState == heroJumpJumpState() || hero.jumpState == heroDoubleJumpJumpState())
                     hero.jumpState = heroOnTheWallNotReadyToJumpJumpState();
@@ -321,9 +320,9 @@ float updateHeroPosition(Hero &hero, HeroTextures &heroTextures, std::vector<Wal
                     hero.jumpState = heroBouncedJumpState();
                     heroStartJump(hero);
                     updateHeroImgScale(hero);
-                    return 0;
                 }
                 updateHeroSprite(hero, heroTextures);
+                return 0;
             }
         }
     }

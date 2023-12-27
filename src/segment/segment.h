@@ -143,8 +143,9 @@ sf::Vector2f getCheckpointPositionFromActiveSegment(std::vector<Segment> &segmen
 
 bool isPrevSegmentEnded(std::vector<Segment> &segments, sf::Vector2u windowSize)
 {
+    const int deltaSegmentAfterEnded = 20;
     const sf::Vector2f prevCheckpointPosition = getCheckpointPositionFromActiveSegment(segments);
-    return windowSize.y + 20 < prevCheckpointPosition.y;
+    return windowSize.y + deltaSegmentAfterEnded < prevCheckpointPosition.y;
 }
 
 bool isCurrSegmentCompleted(std::vector<Segment> &segments, float heroPositionY)

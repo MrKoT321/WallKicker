@@ -60,7 +60,7 @@ void pollEvents(sf::RenderWindow &window, Game &game, Hero &hero, HeroTextures &
 void updateScreen(sf::Vector2u windowSize, Hero &hero, std::vector<Segment> &segments, Ground &ground, float heroVerticalSpeed, float dt)
 {
     const float positionToChangeScreen = windowSize.y * 0.4;
-    if (hero.position.y < positionToChangeScreen)
+    if (getHeroPosition(hero).y < positionToChangeScreen)
     {
         const int defaultScreenChangeSpeed = 100;
         const int screenChangeSpeed = heroVerticalSpeed - defaultScreenChangeSpeed >= defaultScreenChangeSpeed ? heroVerticalSpeed - defaultScreenChangeSpeed : defaultScreenChangeSpeed;
@@ -79,7 +79,7 @@ void updateWalls(std::vector<Segment> &segments, sf::RenderWindow &window)
 
 void updateCheckpoints(Game &game, std::vector<Segment> &segments, Hero &hero)
 {
-    if (isCurrSegmentCompleted(segments, hero.position.y))
+    if (isCurrSegmentCompleted(segments, getHeroPosition(hero).y))
     {
         updateSegmentWithLvlComplete(segments);
         increaseGameScore(game);

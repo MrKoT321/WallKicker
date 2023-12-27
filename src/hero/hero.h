@@ -108,6 +108,16 @@ bool isHeroShouldDead(sf::Vector2u windowSize, Hero &hero)
     return hero.position.y + deltaHeroPosition > windowSize.y;
 }
 
+bool isHeroTouchesWall(sf::Vector2f heroPosition, sf::Vector2f wallPosition, int wallWidth, int wallSize)
+{
+    const int oneWallHeigth = 80;
+    const int heroHeigth = 97;
+    return heroPosition.x >= wallPosition.x &&
+           heroPosition.x < wallPosition.x + wallWidth &&
+           heroPosition.y + heroHeigth * 3 / 4 >= wallPosition.y &&
+           heroPosition.y + heroHeigth * 1 / 4 < wallPosition.y + oneWallHeigth * wallSize;
+}
+
 void setHeroAlive(Hero &hero, bool state)
 {
     hero.isAlive = state;
@@ -272,18 +282,12 @@ float updateHeroPosition(Hero &hero, HeroTextures &heroTextures, std::vector<Wal
     }
     if (!isHeroOnWall(hero))
     {
-        const int heroWidth = 54;
-        const int heroHeigth = 97;
-        const int oneWallHeigth = 80;
-        int wallWidth;
         std::vector<Wall> walls(wallsSegment1);
         walls.insert(walls.end(), wallsSegment2.begin(), wallsSegment2.end());
         const int wallsCount = (int)walls.size();
         for (int i = 0; i < wallsCount; i++)
         {
-            wallWidth = getWallWidth(walls[i]);
-            if (hero.position.x >= walls[i].position.x && hero.position.x < walls[i].position.x + wallWidth &&
-                hero.position.y + heroHeigth * 3 / 4 >= walls[i].position.y && hero.position.y + heroHeigth * 1 / 4 < walls[i].position.y + oneWallHeigth * walls[i].size)
+            if (isHeroTouchesWall(hero.position, getWallPosition(walls[i]), getWallWidth(walls[i]), getWallSize(walls[i])))
             {
                 if (isHeroOnSpikeWall(walls[i], hero.direction))
                 {
@@ -358,4 +362,9 @@ void stopHeroJump(Hero &hero)
         hero.jumpState = heroOnTheWallReadyToJumpJumpState();
     if (hero.jumpState == heroOnCheckpointNotReadyToJumpJumpState())
         hero.jumpState = heroOnCheckpointReadyToJumpJumpState();
+}
+
+sf::Vector2f getHeroPosition(Hero &hero)
+{
+    return hero.position;
 }

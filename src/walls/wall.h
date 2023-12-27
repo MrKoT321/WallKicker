@@ -115,6 +115,11 @@ bool isHeroOnBounceWall(Wall &wall)
     return wall.feature == getBounceWallFeature();
 }
 
+sf::Vector2f getWallPosition(Wall &wall)
+{
+    return wall.position;
+}
+
 int getWallWidth(Wall &wall)
 {
     if (wall.feature == getLeftSpikeWallFeature() || wall.feature == getRightSpikeWallFeature())
@@ -122,4 +127,9 @@ int getWallWidth(Wall &wall)
     if (wall.feature == getBothSpikeWallFeature())
         return 60;
     return 20;
+}
+
+int getWallSize(Wall &wall)
+{
+    return wall.size;
 }

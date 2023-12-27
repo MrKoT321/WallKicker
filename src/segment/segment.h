@@ -7,6 +7,81 @@ struct Segment
     bool isCheckpointPassed = false;
 };
 
+int random(int low, int high)
+{
+    return low + rand() % (high - low + 1);
+}
+
+int getNextLvlVariantNum()
+{
+    const int maxNextLvlVariants = 4;
+    return random(1, maxNextLvlVariants);
+}
+
+void initSegmentVariant1(Segment &segment, sf::Vector2u windowSize, float segmentStart)
+{
+    const int countWalls = 9;
+    for (int i = 0; i < countWalls; i++)
+        segment.walls.push_back(Wall());
+    const std::vector<sf::Vector2f> wallsPosition = {{200, 160}, {442, 355}, {442, 470}, {442, 585}, {722, 160}, {722, -516}, {462, -319}, {442, -161}, {200, -516}};
+    const std::vector<std::string> wallsTypes = {getSimpleWallType(), getBothSpikeWallType(), getBothSpikeWallType(), getBothSpikeWallType(), getSimpleWallType(), getSimpleWallType(), getRightSpikeWallType(), getBothSpikeWallType(), getEnableCheckpointWallType()};
+    const std::vector<int> wallsSize = {7, 1, 1, 1, 7, 7, 1, 1, 1};
+    const std::vector<char> wallsFeature = {getSimpleWallFeature(), getBothSpikeWallFeature(), getBothSpikeWallFeature(), getBothSpikeWallFeature(), getSimpleWallFeature(), getSimpleWallFeature(), getRightSpikeWallFeature(), getBothSpikeWallFeature(), getCheckpointWallFeature()};
+    initWallsSegment(segment.walls, countWalls, wallsPosition, wallsTypes, wallsSize, wallsFeature, segmentStart);
+}
+
+void initSegmentVariant2(Segment &segment, sf::Vector2u windowSize, float segmentStart)
+{
+    const int countWalls = 8;
+    for (int i = 0; i < countWalls; i++)
+        segment.walls.push_back(Wall());
+    const std::vector<sf::Vector2f> wallsPosition = {{80, 446}, {313, 442}, {546, 442}, {780, 89}, {780, -97}, {481, -97}, {200, -310}, {200, -516}};
+    const std::vector<std::string> wallsTypes = {getSimpleWallType(), getRightSpikeWallType(), getRightSpikeWallType(), getSimpleWallType(), getBounceWallType(), getRightSpikeWallType(), getSimpleWallType(), getEnableCheckpointWallType()};
+    const std::vector<int> wallsSize = {3, 1, 1, 8, 1, 1, 4, 1};
+    const std::vector<char> wallsFeature = {getSimpleWallFeature(), getRightSpikeWallFeature(), getRightSpikeWallFeature(), getSimpleWallFeature(), getBounceWallFeature(), getRightSpikeWallFeature(), getSimpleWallFeature(), getCheckpointWallFeature()};
+    initWallsSegment(segment.walls, countWalls, wallsPosition, wallsTypes, wallsSize, wallsFeature, segmentStart);
+}
+
+void initSegmentVariant3(Segment &segment, sf::Vector2u windowSize, float segmentStart)
+{
+    const int countWalls = 6;
+    for (int i = 0; i < countWalls; i++)
+        segment.walls.push_back(Wall());
+    const std::vector<sf::Vector2f> wallsPosition = {{200, 505}, {450, 390}, {700, -69}, {500, -189}, {328, -349}, {200, -516}};
+    const std::vector<std::string> wallsTypes = {getSimpleWallType(), getSimpleWallType(), getSimpleWallType(), getSimpleWallType(), getSimpleWallType(), getEnableCheckpointWallType()};
+    const std::vector<int> wallsSize = {2, 2, 7, 2, 2, 1};
+    const std::vector<char> wallsFeature = {getSimpleWallFeature(), getSimpleWallFeature(), getSimpleWallFeature(), getSimpleWallFeature(), getSimpleWallFeature(), getCheckpointWallFeature()};
+    initWallsSegment(segment.walls, countWalls, wallsPosition, wallsTypes, wallsSize, wallsFeature, segmentStart);
+}
+
+void initSegmentVariant4(Segment &segment, sf::Vector2u windowSize, float segmentStart)
+{
+    const int countWalls = 9;
+    for (int i = 0; i < countWalls; i++)
+        segment.walls.push_back(Wall());
+    const std::vector<sf::Vector2f> wallsPosition = {{200, 555}, {200, 385}, {200, 215}, {200, 45}, {200, -125}, {200, -295}, {200, -465}, {200, -635}, {200, -805}};
+    const std::vector<std::string> wallsTypes = {getBounceWallType(), getSimpleWallType(), getBounceWallType(), getSimpleWallType(), getBounceWallType(), getSimpleWallType(), getBounceWallType(), getSimpleWallType(), getEnableCheckpointWallType()};
+    const std::vector<int> wallsSize = {1, 1, 1, 1, 1, 1, 1, 1, 1};
+    const std::vector<char> wallsFeature = {getBounceWallFeature(), getSimpleWallFeature(), getBounceWallFeature(), getSimpleWallFeature(), getBounceWallFeature(), getSimpleWallFeature(), getBounceWallFeature(), getSimpleWallFeature(), getCheckpointWallFeature()};
+    initWallsSegment(segment.walls, countWalls, wallsPosition, wallsTypes, wallsSize, wallsFeature, segmentStart);
+}
+
+void chooseSegmentToCreate(Segment &segment, sf::Vector2u windowSize, float segmentStart)
+{
+    const int nextLvlVariantNum = getNextLvlVariantNum();
+    segment.isCheckpointPassed = false;
+    segment.walls.clear();
+
+    if (nextLvlVariantNum == 1)
+        initSegmentVariant1(segment, windowSize, segmentStart);
+    if (nextLvlVariantNum == 2)
+        initSegmentVariant2(segment, windowSize, segmentStart);
+    if (nextLvlVariantNum == 3)
+        initSegmentVariant3(segment, windowSize, segmentStart);
+    if (nextLvlVariantNum == 4)
+        initSegmentVariant4(segment, windowSize, segmentStart);
+}
+
 void initSegments(std::vector<Segment> &segments, sf::Vector2u windowSize)
 {
     segments.clear();
@@ -22,15 +97,8 @@ void initSegments(std::vector<Segment> &segments, sf::Vector2u windowSize)
     segments[0].isActive = true;
     initWallsSegment(segments[0].walls, countWallsLvl1, wallsPositionLvl1, wallsTypesLvl1, wallsSizeLvl1, wallsFeatureLvl1);
 
-    const int countWallsLvl2 = 4;
-    for (int i = 0; i < countWallsLvl2; i++)
-        segments[1].walls.push_back(Wall());
-    const float lvl2SegmentStart = wallsPositionLvl1[countWallsLvl1 - 1].y - 120 - windowSize.y;
-    const std::vector<sf::Vector2f> wallsPositionLvl2 = {{200, 400}, {635, 0}, {200, 10}, {200, -170}};
-    const std::vector<std::string> wallsTypesLvl2 = {getSimpleWallType(), getSimpleWallType(), getSimpleWallType(), getEnableCheckpointWallType()};
-    const std::vector<int> wallsSizeLvl2 = {5, 10, 3, 1};
-    const std::vector<char> wallsFeatureLvl2 = {getSimpleWallFeature(), getSimpleWallFeature(), getSimpleWallFeature(), getCheckpointWallFeature()};
-    initWallsSegment(segments[1].walls, countWallsLvl2, wallsPositionLvl2, wallsTypesLvl2, wallsSizeLvl2, wallsFeatureLvl2, lvl2SegmentStart);
+    const float lvl2SegmentStart = wallsPositionLvl1[countWallsLvl1 - 1].y - 60 - windowSize.y;
+    chooseSegmentToCreate(segments[1], windowSize, lvl2SegmentStart);
 }
 
 void drawWalls(sf::RenderWindow &window, std::vector<Segment> &segments)
@@ -47,7 +115,7 @@ void drawWalls(sf::RenderWindow &window, std::vector<Segment> &segments)
     }
 }
 
-int getActiveSegmentIndex(std::vector<Segment> segments)
+int getActiveSegmentIndex(std::vector<Segment> &segments)
 {
     return segments[1].isActive ? 1 : 0;
 }
@@ -59,18 +127,9 @@ void initNextSegment(std::vector<Segment> &segments, sf::Vector2u windowSize)
     segments[activeSegmentIndex].isActive = false;
     segments[1 - activeSegmentIndex].isActive = true;
 
-    const int countWalls = 5;
-    segments[activeSegmentIndex].walls.clear();
-    for (int i = 0; i < countWalls; i++)
-        segments[activeSegmentIndex].walls.push_back(Wall());
     const int prevSegmentLastWallIndex = (int)segments[1 - activeSegmentIndex].walls.size() - 1;
-    const float segmentStart = segments[1 - activeSegmentIndex].walls[prevSegmentLastWallIndex].position.y - 120 - windowSize.y;
-    const std::vector<sf::Vector2f> wallsPosition = {{200, 400}, {635, 0}, {200, 10}, {200, -170}, {200, -370}};
-    const std::vector<std::string> wallsTypes = {getSimpleWallType(), getSimpleWallType(), getSimpleWallType(), getBounceWallType(), getEnableCheckpointWallType()};
-    const std::vector<int> wallsSize = {5, 10, 3, 1, 1};
-    const std::vector<char> wallsFeature = {getSimpleWallFeature(), getSimpleWallFeature(), getSimpleWallFeature(), getBounceWallFeature(), getCheckpointWallFeature()};
-    segments[activeSegmentIndex].isCheckpointPassed = false;
-    initWallsSegment(segments[activeSegmentIndex].walls, countWalls, wallsPosition, wallsTypes, wallsSize, wallsFeature, segmentStart);
+    const float segmentStart = segments[1 - activeSegmentIndex].walls[prevSegmentLastWallIndex].position.y - 60 - windowSize.y;
+    chooseSegmentToCreate(segments[activeSegmentIndex], windowSize, segmentStart);
 }
 
 sf::Vector2f getCheckpointFromActiveSegment(std::vector<Segment> &segments)

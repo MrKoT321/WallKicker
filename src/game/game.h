@@ -9,7 +9,7 @@ struct Game
     sf::Text scoreText;
 };
 
-bool isGameRestarted(Game game)
+bool isGameRestarted(Game &game)
 {
     return game.isRestart;
 }

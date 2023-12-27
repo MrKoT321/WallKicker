@@ -3,6 +3,7 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
+#include <random>
 #include "map/map.h"
 #include "walls/wall.h"
 #include "hero/hero.h"
@@ -106,7 +107,7 @@ void update(Game &game, Hero &hero, HeroTextures &heroTextures, std::vector<Segm
     }
 }
 
-void redrawFrame(sf::RenderWindow &window, Game &game, Map map, Ground ground, Hero hero, std::vector<Segment> &segments)
+void redrawFrame(sf::RenderWindow &window, Game &game, Map &map, Ground &ground, Hero &hero, std::vector<Segment> &segments)
 {
     window.clear();
     drawMap(window, map);

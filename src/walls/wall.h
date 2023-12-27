@@ -97,7 +97,7 @@ void updateCheckpointImgWithLvlComplete(Wall &wall)
     wall.img.setTexture(wall.texture);
 }
 
-bool isHeroOnSpikeWall(Wall wall, char heroDirection)
+bool isHeroOnSpikeWall(Wall &wall, char heroDirection)
 {
     if (wall.feature == getSimpleWallFeature() || wall.feature == getCheckpointWallFeature() || wall.feature == getBounceWallFeature())
         return false;

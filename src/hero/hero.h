@@ -33,17 +33,17 @@ bool isHeroOnWall(Hero &hero)
     return hero.jumpState == 5 || hero.jumpState == 6 || hero.jumpState == 8 || hero.jumpState == 9;
 }
 
-bool isHeroAlive(Hero hero)
+bool isHeroAlive(Hero &hero)
 {
     return hero.isAlive;
 }
 
-bool isHeroExploded(Hero hero)
+bool isHeroExploded(Hero &hero)
 {
     return hero.isExploded;
 }
 
-bool isHeroShouldDead(sf::Vector2u windowSize, Hero hero)
+bool isHeroShouldDead(sf::Vector2u windowSize, Hero &hero)
 {
     return hero.position.y + 80 > windowSize.y;
 }
@@ -208,7 +208,7 @@ void heroStartJump(Hero &hero)
     hero.speedY = startSpeedY;
 }
 
-float updateHeroPosition(Hero &hero, HeroTextures &heroTextures, std::vector<Wall> wallsSegment1, std::vector<Wall> wallsSegment2, float dt)
+float updateHeroPosition(Hero &hero, HeroTextures &heroTextures, std::vector<Wall> &wallsSegment1, std::vector<Wall> &wallsSegment2, float dt)
 {
     const int gravity = 700;
     if (hero.jumpState == 1 || hero.jumpState == 3 || hero.jumpState == 10)

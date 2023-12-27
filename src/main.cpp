@@ -39,7 +39,7 @@ void pollEvents(sf::RenderWindow &window, Game &game, Hero &hero, HeroTextures &
             {
                 stopHeroJump(hero);
                 updateHeroSprite(hero, heroTextures);
-                break;
+                return;
             }
             if (event.key.code == sf::Keyboard::Return)
                 restartGame(game, hero);
@@ -62,7 +62,8 @@ void updateScreen(sf::Vector2u windowSize, Hero &hero, std::vector<Segment> &seg
     const float positionToChangeScreen = windowSize.y * 0.4;
     if (hero.position.y < positionToChangeScreen)
     {
-        const int screenChangeSpeed = heroVerticalSpeed - 100 >= 100 ? heroVerticalSpeed - 100 : 100;
+        const int defaultScreenChangeSpeed = 100;
+        const int screenChangeSpeed = heroVerticalSpeed - defaultScreenChangeSpeed >= defaultScreenChangeSpeed ? heroVerticalSpeed - defaultScreenChangeSpeed : defaultScreenChangeSpeed;
         updateHeroPositionWithScreenMove(hero, screenChangeSpeed, dt);
         updateGroundPositionWithScreenMove(ground, screenChangeSpeed, dt);
         updateSegmentPositionWithScreenMove(segments, screenChangeSpeed, dt);
@@ -120,9 +121,7 @@ void redrawFrame(sf::RenderWindow &window, Game &game, Map &map, Ground &ground,
         drawScoreEndGame(window, game);
     }
     else
-    {
         drawScore(window, game);
-    }
     window.display();
 }
 

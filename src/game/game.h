@@ -24,8 +24,10 @@ void initScoreFont(Game &game)
 
 void initScoreTextStyles(Game &game)
 {
-    game.scorePosition = {10, 10};
-    game.scoreText.setCharacterSize(35);
+    const sf::Vector2f intDefaultScoreTextPosition = {10, 10};
+    const int defaultScoreTextSize = 35;
+    game.scorePosition = intDefaultScoreTextPosition;
+    game.scoreText.setCharacterSize(defaultScoreTextSize);
     game.scoreText.setFillColor(sf::Color::Black);
     game.scoreText.setFont(game.scoreFont);
 }
@@ -49,17 +51,19 @@ void drawScore(sf::RenderWindow &window, Game &game)
 
 void drawScoreEndGame(sf::RenderWindow &window, Game &game)
 {
+    const sf::Vector2f defaultScoreTextEndGamePosition = {660, 400};
+    const int defaultScoreTextEndGameSize = 70;
     std::ostringstream oss;
     oss << "" << game.score;
-    game.scorePosition = {660, 400};
-    game.scoreText.setCharacterSize(70);
+    game.scorePosition = defaultScoreTextEndGamePosition;
+    game.scoreText.setCharacterSize(defaultScoreTextEndGameSize);
     game.scoreText.setFillColor(sf::Color::White);
     game.scoreText.setPosition(game.scorePosition);
     game.scoreText.setString(oss.str());
     window.draw(game.scoreText);
 }
 
-void restartGame(Game &game, Hero hero)
+void restartGame(Game &game, Hero &hero)
 {
     if (!isHeroAlive(hero) && !isHeroExploded(hero))
         game.isRestart = true;

@@ -7,7 +7,7 @@ struct Hero
     bool isAlive;
     bool isExploded;
     float speedX = 300;
-    float speedY = 500;
+    float speedY;
     sf::Vector2f position;
     sf::Sprite img;
     sf::Sprite explodeImg;
@@ -19,18 +19,76 @@ struct HeroTextures
     sf::Texture standTexture;
     sf::Texture jumpTexture;
     sf::Texture fallTexture;
-    sf::Texture startFlipTexture1;
-    sf::Texture startFlipTexture2;
-    sf::Texture flipTexture1;
-    sf::Texture flipTexture2;
-    sf::Texture flipTexture3;
     sf::Texture hookTexture;
     sf::Texture explodeTexture;
 };
 
+char heroDirectionLeft()
+{
+    return 'l';
+}
+
+char heroDirectionRight()
+{
+    return 'r';
+}
+
+int heroStartJumpState()
+{
+    return 0;
+}
+
+int heroJumpJumpState()
+{
+    return 1;
+}
+
+int heroJumpFallJumpState()
+{
+    return 2;
+}
+
+int heroDoubleJumpJumpState()
+{
+    return 3;
+}
+
+int heroDoubleJumpFallJumpState()
+{
+    return 4;
+}
+
+int heroOnTheWallReadyToJumpJumpState()
+{
+    return 5;
+}
+
+int heroOnTheWallNotReadyToJumpJumpState()
+{
+    return 6;
+}
+
+int heroOnCheckpointNotReadyToJumpJumpState()
+{
+    return 8;
+}
+
+int heroOnCheckpointReadyToJumpJumpState()
+{
+    return 9;
+}
+
+int heroBouncedJumpState()
+{
+    return 10;
+}
+
 bool isHeroOnWall(Hero &hero)
 {
-    return hero.jumpState == 5 || hero.jumpState == 6 || hero.jumpState == 8 || hero.jumpState == 9;
+    return hero.jumpState == heroOnTheWallReadyToJumpJumpState() ||
+           hero.jumpState == heroOnTheWallNotReadyToJumpJumpState() ||
+           hero.jumpState == heroOnCheckpointNotReadyToJumpJumpState() ||
+           hero.jumpState == heroOnCheckpointReadyToJumpJumpState();
 }
 
 bool isHeroAlive(Hero &hero)
@@ -45,7 +103,9 @@ bool isHeroExploded(Hero &hero)
 
 bool isHeroShouldDead(sf::Vector2u windowSize, Hero &hero)
 {
-    return hero.position.y + 80 > windowSize.y;
+    /* To see explode */
+    const int deltaHeroPosition = 80;
+    return hero.position.y + deltaHeroPosition > windowSize.y;
 }
 
 void setHeroAlive(Hero &hero, bool state)
@@ -73,26 +133,6 @@ void initHeroTexture(HeroTextures &heroTextures)
     {
         std::cout << "Fail to load fall image" << std::endl;
     }
-    if (!heroTextures.startFlipTexture1.loadFromFile("../images/hero/hero_start_flip1.png"))
-    {
-        std::cout << "Fail to load start flip 1 image" << std::endl;
-    }
-    if (!heroTextures.startFlipTexture2.loadFromFile("../images/hero/hero_start_flip2.png"))
-    {
-        std::cout << "Fail to load start flip 2 image" << std::endl;
-    }
-    if (!heroTextures.flipTexture1.loadFromFile("../images/hero/hero_flip1.png"))
-    {
-        std::cout << "Fail to load flip 1 image" << std::endl;
-    }
-    if (!heroTextures.flipTexture2.loadFromFile("../images/hero/hero_flip2.png"))
-    {
-        std::cout << "Fail to load flip 2 image" << std::endl;
-    }
-    if (!heroTextures.flipTexture3.loadFromFile("../images/hero/hero_flip3.png"))
-    {
-        std::cout << "Fail to load flip 3 image" << std::endl;
-    }
     if (!heroTextures.hookTexture.loadFromFile("../images/hero/hero_hook.png"))
     {
         std::cout << "Fail to load hook image" << std::endl;
@@ -105,8 +145,8 @@ void initHeroTexture(HeroTextures &heroTextures)
 
 void initHero(Hero &hero, HeroTextures &heroTextures)
 {
-    hero.jumpState = 0;
-    hero.direction = 'l';
+    hero.jumpState = heroStartJumpState();
+    hero.direction = heroDirectionLeft();
     hero.isExploded = false;
     hero.isAlive = true;
     hero.position = {473, 633};
@@ -135,7 +175,7 @@ void normolizeHeroExplodePosition(Hero &hero)
 {
     const int collerateDeltaX = 25;
     const int collerateDeltaY = 10;
-    if (hero.direction == 'l')
+    if (hero.direction == heroDirectionLeft())
     {
         if (isHeroOnWall(hero))
             hero.position.x += collerateDeltaX;
@@ -168,18 +208,14 @@ void heroExplode(sf::RenderWindow &window, Hero &hero, HeroTextures &heroTexture
 
 void updateHeroSprite(Hero &hero, HeroTextures &heroTextures)
 {
-    if (hero.jumpState == 1 || hero.jumpState == 3 || hero.jumpState == 10)
+    if (hero.jumpState == heroJumpJumpState() || hero.jumpState == heroDoubleJumpJumpState() || hero.jumpState == heroBouncedJumpState())
     {
         if (hero.speedY >= 0)
-        {
             hero.img.setTexture(heroTextures.jumpTexture);
-        }
         else
-        {
             hero.img.setTexture(heroTextures.fallTexture);
-        }
     }
-    if (hero.jumpState == 2 || hero.jumpState == 4)
+    if (hero.jumpState == heroJumpFallJumpState() || hero.jumpState == heroDoubleJumpFallJumpState())
         hero.img.setTexture(heroTextures.fallTexture);
     if (isHeroOnWall(hero))
         hero.img.setTexture(heroTextures.hookTexture);
@@ -188,7 +224,7 @@ void updateHeroSprite(Hero &hero, HeroTextures &heroTextures)
 void updateHeroImgScale(Hero &hero)
 {
     const int heroWidth = 54;
-    if (hero.direction == 'r')
+    if (hero.direction == heroDirectionRight())
     {
         hero.img.setScale(-1, 1);
         hero.explodeImg.setScale(-1, 1);
@@ -211,31 +247,28 @@ void heroStartJump(Hero &hero)
 float updateHeroPosition(Hero &hero, HeroTextures &heroTextures, std::vector<Wall> &wallsSegment1, std::vector<Wall> &wallsSegment2, float dt)
 {
     const int gravity = 700;
-    if (hero.jumpState == 1 || hero.jumpState == 3 || hero.jumpState == 10)
+    const int defaultSliceOnWall = 40;
+    if (hero.jumpState == heroJumpJumpState() || hero.jumpState == heroDoubleJumpJumpState() || hero.jumpState == heroBouncedJumpState())
     {
-        if (hero.direction == 'l')
+        if (hero.direction == heroDirectionLeft())
             hero.position += {-hero.speedX * dt, -hero.speedY * dt};
         else
             hero.position += {hero.speedX * dt, -hero.speedY * dt};
         hero.speedY -= gravity * dt;
     }
-    if (hero.jumpState == 2 || hero.jumpState == 4)
+    if (hero.jumpState == heroJumpFallJumpState() || hero.jumpState == heroDoubleJumpFallJumpState())
     {
         if (hero.speedY > 0)
             hero.speedY = 0;
-        if (hero.direction == 'l')
+        if (hero.direction == heroDirectionLeft())
             hero.position += {-hero.speedX * dt, -hero.speedY * dt};
         else
             hero.position += {hero.speedX * dt, -hero.speedY * dt};
         hero.speedY -= gravity * dt;
     }
-    if (hero.jumpState == 5 || hero.jumpState == 6)
+    if (hero.jumpState == heroOnTheWallReadyToJumpJumpState() || hero.jumpState == heroOnTheWallNotReadyToJumpJumpState())
     {
-        hero.position += {0, 40 * dt};
-    }
-    if (hero.jumpState == 7)
-    {
-        hero.position += {0, hero.speedX * dt};
+        hero.position += {0, defaultSliceOnWall * dt};
     }
     if (!isHeroOnWall(hero))
     {
@@ -259,24 +292,24 @@ float updateHeroPosition(Hero &hero, HeroTextures &heroTextures, std::vector<Wal
                     normolizeHeroExplodePosition(hero);
                     return 0;
                 }
-                if (hero.jumpState == 1 || hero.jumpState == 3)
-                    hero.jumpState = 6;
-                if (hero.jumpState == 2 || hero.jumpState == 4)
-                    hero.jumpState = 5;
+                if (hero.jumpState == heroJumpJumpState() || hero.jumpState == heroDoubleJumpJumpState())
+                    hero.jumpState = heroOnTheWallNotReadyToJumpJumpState();
+                if (hero.jumpState == heroJumpFallJumpState() || hero.jumpState == heroDoubleJumpFallJumpState())
+                    hero.jumpState = heroOnTheWallReadyToJumpJumpState();
                 if (i == (int)wallsSegment1.size() - 1 || i == (int)walls.size() - 1)
                 {
-                    if (hero.jumpState == 6)
-                        hero.jumpState = 8;
+                    if (hero.jumpState == heroOnTheWallNotReadyToJumpJumpState())
+                        hero.jumpState = heroOnCheckpointNotReadyToJumpJumpState();
                     else
-                        hero.jumpState = 9;
+                        hero.jumpState = heroOnCheckpointReadyToJumpJumpState();
                 }
-                if (hero.direction == 'l')
-                    hero.direction = 'r';
+                if (hero.direction == heroDirectionLeft())
+                    hero.direction = heroDirectionRight();
                 else
-                    hero.direction = 'l';
+                    hero.direction = heroDirectionLeft();
                 if (isHeroOnBounceWall(walls[i]))
                 {
-                    hero.jumpState = 10;
+                    hero.jumpState = heroBouncedJumpState();
                     heroStartJump(hero);
                     updateHeroImgScale(hero);
                     return 0;
@@ -295,32 +328,34 @@ void updateHeroPositionWithScreenMove(Hero &hero, int screenChangeSpeed, float d
 
 void updateJumpHeroState(Hero &hero)
 {
-    if (hero.jumpState == 0 || hero.jumpState == 5 || hero.jumpState == 9)
+    if (hero.jumpState == heroStartJumpState() ||
+        hero.jumpState == heroOnTheWallReadyToJumpJumpState() ||
+        hero.jumpState == heroOnCheckpointReadyToJumpJumpState())
     {
-        hero.jumpState = 1;
+        hero.jumpState = heroJumpJumpState();
         heroStartJump(hero);
         updateHeroImgScale(hero);
     }
-    if (hero.jumpState == 2 || hero.jumpState == 10)
+    if (hero.jumpState == heroJumpFallJumpState() || hero.jumpState == heroBouncedJumpState())
     {
         heroStartJump(hero);
-        hero.jumpState = 3;
-        if (hero.direction == 'l')
-            hero.direction = 'r';
+        hero.jumpState = heroDoubleJumpJumpState();
+        if (hero.direction == heroDirectionLeft())
+            hero.direction = heroDirectionRight();
         else
-            hero.direction = 'l';
+            hero.direction = heroDirectionLeft();
         updateHeroImgScale(hero);
     }
 }
 
 void stopHeroJump(Hero &hero)
 {
-    if (hero.jumpState == 1)
-        hero.jumpState = 2;
-    if (hero.jumpState == 3)
-        hero.jumpState = 4;
-    if (hero.jumpState == 6)
-        hero.jumpState = 5;
-    if (hero.jumpState == 8)
-        hero.jumpState = 9;
+    if (hero.jumpState == heroJumpJumpState())
+        hero.jumpState = heroJumpFallJumpState();
+    if (hero.jumpState == heroDoubleJumpJumpState())
+        hero.jumpState = heroDoubleJumpFallJumpState();
+    if (hero.jumpState == heroOnTheWallNotReadyToJumpJumpState())
+        hero.jumpState = heroOnTheWallReadyToJumpJumpState();
+    if (hero.jumpState == heroOnCheckpointNotReadyToJumpJumpState())
+        hero.jumpState = heroOnCheckpointReadyToJumpJumpState();
 }

@@ -97,7 +97,8 @@ void initSegments(std::vector<Segment> &segments, sf::Vector2u windowSize)
     segments[0].isActive = true;
     initWallsSegment(segments[0].walls, countWallsLvl1, wallsPositionLvl1, wallsTypesLvl1, wallsSizeLvl1, wallsFeatureLvl1);
 
-    const float lvl2SegmentStart = wallsPositionLvl1[countWallsLvl1 - 1].y - 60 - windowSize.y;
+    const int deltaSegmentsPositions = 60;
+    const float lvl2SegmentStart = wallsPositionLvl1[countWallsLvl1 - 1].y - deltaSegmentsPositions - windowSize.y;
     chooseSegmentToCreate(segments[1], windowSize, lvl2SegmentStart);
 }
 
@@ -128,11 +129,12 @@ void initNextSegment(std::vector<Segment> &segments, sf::Vector2u windowSize)
     segments[1 - activeSegmentIndex].isActive = true;
 
     const int prevSegmentLastWallIndex = (int)segments[1 - activeSegmentIndex].walls.size() - 1;
-    const float segmentStart = segments[1 - activeSegmentIndex].walls[prevSegmentLastWallIndex].position.y - 60 - windowSize.y;
+    const int deltaSegmentsPositions = 60;
+    const float segmentStart = segments[1 - activeSegmentIndex].walls[prevSegmentLastWallIndex].position.y - deltaSegmentsPositions - windowSize.y;
     chooseSegmentToCreate(segments[activeSegmentIndex], windowSize, segmentStart);
 }
 
-sf::Vector2f getCheckpointFromActiveSegment(std::vector<Segment> &segments)
+sf::Vector2f getCheckpointPositionFromActiveSegment(std::vector<Segment> &segments)
 {
     int activeSegmentIndex = getActiveSegmentIndex(segments);
     const int activeSegmentWallsCount = (int)segments[activeSegmentIndex].walls.size();
@@ -141,7 +143,7 @@ sf::Vector2f getCheckpointFromActiveSegment(std::vector<Segment> &segments)
 
 bool isPrevSegmentEnded(std::vector<Segment> &segments, sf::Vector2u windowSize)
 {
-    const sf::Vector2f prevCheckpointPosition = getCheckpointFromActiveSegment(segments);
+    const sf::Vector2f prevCheckpointPosition = getCheckpointPositionFromActiveSegment(segments);
     return windowSize.y + 20 < prevCheckpointPosition.y;
 }
 

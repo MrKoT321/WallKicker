@@ -74,7 +74,7 @@ void updateWalls(std::vector<Segment> &segments, sf::RenderWindow &window)
 {
     const sf::Vector2u windowSize = getWindowSize(window);
     if (isPrevSegmentEnded(segments, windowSize))
-        initNextSegment(segments, windowSize);
+        createNextSegment(segments, windowSize);
 }
 
 void updateCheckpoints(Game &game, std::vector<Segment> &segments, Hero &hero)

@@ -18,7 +18,7 @@ int getNextLvlVariantNum()
     return random(1, maxNextLvlVariants);
 }
 
-void initSegmentVariant1(Segment &segment, sf::Vector2u windowSize, float segmentStart)
+void createSegmentVariant1(Segment &segment, sf::Vector2u windowSize, float segmentStart)
 {
     const int countWalls = 9;
     for (int i = 0; i < countWalls; i++)
@@ -27,10 +27,10 @@ void initSegmentVariant1(Segment &segment, sf::Vector2u windowSize, float segmen
     const std::vector<std::string> wallsTypes = {getSimpleWallType(), getBothSpikeWallType(), getBothSpikeWallType(), getBothSpikeWallType(), getSimpleWallType(), getSimpleWallType(), getRightSpikeWallType(), getBothSpikeWallType(), getEnableCheckpointWallType()};
     const std::vector<int> wallsSize = {7, 1, 1, 1, 7, 7, 1, 1, 1};
     const std::vector<char> wallsFeature = {getSimpleWallFeature(), getBothSpikeWallFeature(), getBothSpikeWallFeature(), getBothSpikeWallFeature(), getSimpleWallFeature(), getSimpleWallFeature(), getRightSpikeWallFeature(), getBothSpikeWallFeature(), getCheckpointWallFeature()};
-    initWallsSegment(segment.walls, countWalls, wallsPosition, wallsTypes, wallsSize, wallsFeature, segmentStart);
+    createWallsSegment(segment.walls, countWalls, wallsPosition, wallsTypes, wallsSize, wallsFeature, segmentStart);
 }
 
-void initSegmentVariant2(Segment &segment, sf::Vector2u windowSize, float segmentStart)
+void createSegmentVariant2(Segment &segment, sf::Vector2u windowSize, float segmentStart)
 {
     const int countWalls = 8;
     for (int i = 0; i < countWalls; i++)
@@ -39,10 +39,10 @@ void initSegmentVariant2(Segment &segment, sf::Vector2u windowSize, float segmen
     const std::vector<std::string> wallsTypes = {getSimpleWallType(), getRightSpikeWallType(), getRightSpikeWallType(), getSimpleWallType(), getBounceWallType(), getRightSpikeWallType(), getSimpleWallType(), getEnableCheckpointWallType()};
     const std::vector<int> wallsSize = {3, 1, 1, 8, 1, 1, 4, 1};
     const std::vector<char> wallsFeature = {getSimpleWallFeature(), getRightSpikeWallFeature(), getRightSpikeWallFeature(), getSimpleWallFeature(), getBounceWallFeature(), getRightSpikeWallFeature(), getSimpleWallFeature(), getCheckpointWallFeature()};
-    initWallsSegment(segment.walls, countWalls, wallsPosition, wallsTypes, wallsSize, wallsFeature, segmentStart);
+    createWallsSegment(segment.walls, countWalls, wallsPosition, wallsTypes, wallsSize, wallsFeature, segmentStart);
 }
 
-void initSegmentVariant3(Segment &segment, sf::Vector2u windowSize, float segmentStart)
+void createSegmentVariant3(Segment &segment, sf::Vector2u windowSize, float segmentStart)
 {
     const int countWalls = 6;
     for (int i = 0; i < countWalls; i++)
@@ -51,10 +51,10 @@ void initSegmentVariant3(Segment &segment, sf::Vector2u windowSize, float segmen
     const std::vector<std::string> wallsTypes = {getSimpleWallType(), getSimpleWallType(), getSimpleWallType(), getSimpleWallType(), getSimpleWallType(), getEnableCheckpointWallType()};
     const std::vector<int> wallsSize = {2, 2, 7, 2, 2, 1};
     const std::vector<char> wallsFeature = {getSimpleWallFeature(), getSimpleWallFeature(), getSimpleWallFeature(), getSimpleWallFeature(), getSimpleWallFeature(), getCheckpointWallFeature()};
-    initWallsSegment(segment.walls, countWalls, wallsPosition, wallsTypes, wallsSize, wallsFeature, segmentStart);
+    createWallsSegment(segment.walls, countWalls, wallsPosition, wallsTypes, wallsSize, wallsFeature, segmentStart);
 }
 
-void initSegmentVariant4(Segment &segment, sf::Vector2u windowSize, float segmentStart)
+void createSegmentVariant4(Segment &segment, sf::Vector2u windowSize, float segmentStart)
 {
     const int countWalls = 9;
     for (int i = 0; i < countWalls; i++)
@@ -63,7 +63,7 @@ void initSegmentVariant4(Segment &segment, sf::Vector2u windowSize, float segmen
     const std::vector<std::string> wallsTypes = {getBounceWallType(), getSimpleWallType(), getBounceWallType(), getSimpleWallType(), getBounceWallType(), getSimpleWallType(), getBounceWallType(), getSimpleWallType(), getEnableCheckpointWallType()};
     const std::vector<int> wallsSize = {1, 1, 1, 1, 1, 1, 1, 1, 1};
     const std::vector<char> wallsFeature = {getBounceWallFeature(), getSimpleWallFeature(), getBounceWallFeature(), getSimpleWallFeature(), getBounceWallFeature(), getSimpleWallFeature(), getBounceWallFeature(), getSimpleWallFeature(), getCheckpointWallFeature()};
-    initWallsSegment(segment.walls, countWalls, wallsPosition, wallsTypes, wallsSize, wallsFeature, segmentStart);
+    createWallsSegment(segment.walls, countWalls, wallsPosition, wallsTypes, wallsSize, wallsFeature, segmentStart);
 }
 
 void chooseSegmentToCreate(Segment &segment, sf::Vector2u windowSize, float segmentStart)
@@ -73,13 +73,13 @@ void chooseSegmentToCreate(Segment &segment, sf::Vector2u windowSize, float segm
     segment.walls.clear();
 
     if (nextLvlVariantNum == 1)
-        initSegmentVariant1(segment, windowSize, segmentStart);
+        createSegmentVariant1(segment, windowSize, segmentStart);
     if (nextLvlVariantNum == 2)
-        initSegmentVariant2(segment, windowSize, segmentStart);
+        createSegmentVariant2(segment, windowSize, segmentStart);
     if (nextLvlVariantNum == 3)
-        initSegmentVariant3(segment, windowSize, segmentStart);
+        createSegmentVariant3(segment, windowSize, segmentStart);
     if (nextLvlVariantNum == 4)
-        initSegmentVariant4(segment, windowSize, segmentStart);
+        createSegmentVariant4(segment, windowSize, segmentStart);
 }
 
 void initSegments(std::vector<Segment> &segments, sf::Vector2u windowSize)
@@ -95,7 +95,7 @@ void initSegments(std::vector<Segment> &segments, sf::Vector2u windowSize)
     const std::vector<int> wallsSizeLvl1 = {5, 10, 3, 1};
     const std::vector<char> wallsFeatureLvl1 = {getSimpleWallFeature(), getSimpleWallFeature(), getSimpleWallFeature(), getCheckpointWallFeature()};
     segments[0].isActive = true;
-    initWallsSegment(segments[0].walls, countWallsLvl1, wallsPositionLvl1, wallsTypesLvl1, wallsSizeLvl1, wallsFeatureLvl1);
+    createWallsSegment(segments[0].walls, countWallsLvl1, wallsPositionLvl1, wallsTypesLvl1, wallsSizeLvl1, wallsFeatureLvl1);
 
     const int deltaSegmentsPositions = 60;
     const float lvl2SegmentStart = wallsPositionLvl1[countWallsLvl1 - 1].y - deltaSegmentsPositions - windowSize.y;
@@ -121,7 +121,7 @@ int getActiveSegmentIndex(std::vector<Segment> &segments)
     return segments[1].isActive ? 1 : 0;
 }
 
-void initNextSegment(std::vector<Segment> &segments, sf::Vector2u windowSize)
+void createNextSegment(std::vector<Segment> &segments, sf::Vector2u windowSize)
 {
     int activeSegmentIndex = getActiveSegmentIndex(segments);
 

@@ -69,7 +69,7 @@ char getBounceWallFeature()
     return 'j';
 }
 
-void initWallsSegment(std::vector<Wall> &walls, int countWalls, std::vector<sf::Vector2f> wallsPositions, std::vector<std::string> wallsTypes, std::vector<int> wallsSize, std::vector<char> wallsFeature, float segmentStart = 0)
+void createWallsSegment(std::vector<Wall> &walls, int countWalls, std::vector<sf::Vector2f> wallsPositions, std::vector<std::string> wallsTypes, std::vector<int> wallsSize, std::vector<char> wallsFeature, float segmentStart = 0)
 {
     for (int i = 0; i < countWalls; i++)
     {

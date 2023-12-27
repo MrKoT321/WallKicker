@@ -51,7 +51,7 @@ void drawScoreEndGame(sf::RenderWindow &window, Game &game)
 {
     std::ostringstream oss;
     oss << "" << game.score;
-    game.scorePosition = {600, 521};
+    game.scorePosition = {660, 400};
     game.scoreText.setCharacterSize(70);
     game.scoreText.setFillColor(sf::Color::White);
     game.scoreText.setPosition(game.scorePosition);
